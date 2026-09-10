@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forage | Agricultural Supply Chain Platform</title>
+    <title>Forage | From Farm to Market to You</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,124 +12,188 @@
 </head>
 <body>
 
-    <!-- NAVBAR -->
+    <!-- LOOPING SWOOSH LOADER -->
+    <div id="loading-screen">
+        <div class="swoosh-container">
+            <svg viewBox="0 0 1000 400" preserveAspectRatio="none" class="swoosh-svg">
+                <!-- Lines from Left -->
+                <path d="M-200,100 C150,400 350,0 650,200 C850,300 1000,50 1200,150" class="swoosh-path p1"></path>
+                <path d="M-100,300 C200,100 400,400 700,100 C900,-50 1100,250 1200,200" class="swoosh-path p3"></path>
+                <!-- Lines from Right -->
+                <path d="M1200,350 C900,100 700,500 400,200 C200,50 0,350 -200,200" class="swoosh-path p2"></path>
+                <path d="M1200,50 C800,400 600,-50 300,250 C100,400 -100,100 -200,150" class="swoosh-path p4"></path>
+                <!-- Center loops -->
+                <path d="M200,-100 C300,500 700,-100 800,500" class="swoosh-path p5"></path>
+            </svg>
+        </div>
+        <!-- TO PUT YOUR LOGO HERE: Change the src below to match your logo file name exactly -->
+        <img src="forage-logo.png" alt="Forage Logo" class="loader-logo">
+    </div>
+
+    <!-- GLSL BACKGROUND CANVAS -->
+    <canvas id="gl-canvas"></canvas>
+
+    <!-- ULTRA-SLIM NAVBAR -->
     <nav id="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo">
-                <span class="brand-text">Forage<span class="dot">.</span></span>
+                <span class="brand-text">Forage.</span>
             </a>
             <div class="nav-links">
-                <a href="#home">Overview</a>
-                <a href="#roles">Portals</a>
-                <a href="#how-it-works">Workflow</a>
-                <a href="#marketplace">Market Prices</a>
-                <a href="supply_chain_dashboard.html">Database Explorer</a>
+                <a href="#home">Home</a>
+                <a href="#roles">Perspectives</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#marketplace">Marketplace</a>
+                <div class="nav-dropdown">
+                    <button type="button" class="nav-drop-btn">Portals <i class="ph ph-caret-down"></i></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="farmer.html" class="dropdown-item"><i class="ph-bold ph-tractor"></i> Farmer Command Center</a>
+                        <a href="shopkeeper.html" class="dropdown-item"><i class="ph-bold ph-storefront"></i> Shopkeeper Dashboard</a>
+                        <a href="customer.html" class="dropdown-item"><i class="ph-bold ph-cooking-pot"></i> Consumer Kitchen</a>
+                    </div>
+                </div>
             </div>
             <div class="nav-actions">
-                <a href="app.html" class="nav-cockpit-link"><i class="ph ph-squares-four"></i> Master Cockpit</a>
-                <button type="button" class="btn-primary nav-access-btn open-modal" data-role="General">Access Portals</button>
+                <button type="button" class="btn-text open-modal" data-role="General">Login</button>
+                <div class="header-portal-pills">
+                    <a href="farmer.html" class="portal-pill farmer" title="Farmer Command Center"><i class="ph-bold ph-tractor"></i> Farmer</a>
+                    <a href="shopkeeper.html" class="portal-pill shopkeeper" title="Shopkeeper Dashboard"><i class="ph-bold ph-storefront"></i> Shopkeeper</a>
+                    <a href="customer.html" class="portal-pill customer" title="Consumer Kitchen"><i class="ph-bold ph-cooking-pot"></i> Kitchen</a>
+                </div>
             </div>
             <button type="button" class="mobile-menu-btn" aria-label="Toggle Menu">
                 <i class="ph ph-list"></i>
             </button>
+        </div>
+        <!-- Mobile Nav Menu -->
+        <div class="mobile-nav-pane" id="mobile-nav">
+            <a href="#home" class="mobile-nav-link">Home</a>
+            <a href="#roles" class="mobile-nav-link">Perspectives</a>
+            <a href="#how-it-works" class="mobile-nav-link">How It Works</a>
+            <a href="#marketplace" class="mobile-nav-link">Marketplace</a>
+            <div class="mobile-portals-title">LAUNCH DASHBOARDS</div>
+            <div class="mobile-portal-grid">
+                <a href="farmer.html" class="mobile-portal-card farmer"><i class="ph-bold ph-tractor"></i> Farmer Portal</a>
+                <a href="shopkeeper.html" class="mobile-portal-card shopkeeper"><i class="ph-bold ph-storefront"></i> Shopkeeper Dashboard</a>
+                <a href="customer.html" class="mobile-portal-card customer"><i class="ph-bold ph-cooking-pot"></i> Consumer Kitchen</a>
+            </div>
         </div>
     </nav>
 
     <!-- HERO SECTION -->
     <section id="home" class="hero">
         <div class="hero-container">
-            <div class="hero-content">
-                <div class="hero-badge">Agricultural Logistics &amp; Supply Network</div>
+            <div class="hero-content fade-in-up">
+                <div class="hero-badge"><i class="ph-bold ph-sparkle"></i> Intelligent Agri-Supply Chain Network</div>
                 <h1>From Farm to Market to You.</h1>
-                <p>A unified digital ecosystem bringing transparency to agricultural trade. Farmers benchmark against mandi rates, middlemen monitor cold-chain telemetry, and consumers manage fresh pantry supplies.</p>
+                <p>A connected digital ecosystem that empowers farmers to sell smarter, middlemen to source with transit telemetry, and consumers to cook sustainably with zero waste.</p>
                 <div class="hero-buttons">
-                    <button type="button" class="btn-primary open-modal" data-role="General">Access Portals &rarr;</button>
-                    <a href="supply_chain_dashboard.html" class="btn-secondary"><i class="ph ph-database"></i> Supply Chain Database</a>
+                    <a href="app.html" class="btn-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;"><i class="ph-bold ph-squares-four"></i> Launch Master Cockpit</a>
+                    <button type="button" class="btn-secondary" id="explore-btn">Explore Ecosystem</button>
+                    <button type="button" class="btn-secondary open-modal" data-role="General">Launch Portal Demo</button>
+                </div>
+                <div class="hero-quick-portals">
+                    <span>Jump directly to:</span>
+                    <a href="farmer.html" class="chip-link"><i class="ph-fill ph-tractor"></i> Farmer</a>
+                    <a href="shopkeeper.html" class="chip-link"><i class="ph-fill ph-storefront"></i> Shopkeeper</a>
+                    <a href="customer.html" class="chip-link"><i class="ph-fill ph-cooking-pot"></i> Kitchen</a>
+                    <a href="supply_chain_dashboard.html" class="chip-link" style="background:rgba(16,185,129,0.15); border:1px solid #10b981; color:#34d399;"><i class="ph-fill ph-database"></i> Supply Chain DB</a>
                 </div>
             </div>
             
-            <!-- GROUNDED LIVE ECOSYSTEM CARD -->
-            <div class="hero-visual-card">
-                <div class="card-topbar">
-                    <span class="card-topbar-title"><i class="ph-bold ph-broadcast"></i> Live Network Telemetry</span>
-                    <span class="card-status-pill"><span class="dot"></span> Online &amp; Synchronized</span>
+            <div class="hero-visual fade-in-up delay-1">
+                <div class="visual-center">
+                    <div class="connection-line"></div>
                 </div>
-                <div class="telemetry-stack">
-                    <!-- Farm Gate -->
-                    <div class="telemetry-item">
-                        <div class="t-left">
-                            <div class="t-icon"><i class="ph-duotone ph-tractor"></i></div>
-                            <div>
-                                <span class="t-label">Nashik Cultivator Cluster</span>
-                                <span class="t-desc">Grade-A Tomatoes • Batch #TM-894</span>
-                            </div>
-                        </div>
-                        <div class="t-right">
-                            <span class="t-val">₹32.00/kg</span>
-                            <span class="t-sub">+₹4.60 vs Mandi</span>
-                        </div>
+                <div class="floating-card card-1">
+                    <div class="card-header">
+                        <i class="ph-fill ph-plant"></i>
+                        <span>Fresh Tomatoes</span>
                     </div>
-                    <!-- Transit Logistics -->
-                    <div class="telemetry-item">
-                        <div class="t-left">
-                            <div class="t-icon"><i class="ph-duotone ph-truck"></i></div>
-                            <div>
-                                <span class="t-label">Route T-104 (Nashik &rarr; Mumbai)</span>
-                                <span class="t-desc">Refrigerated Logistics • Fleet #MH-15</span>
-                            </div>
-                        </div>
-                        <div class="t-right">
-                            <span class="t-val">18.8°C / 4.1 Vib</span>
-                            <span class="t-sub">Degradation: 0.14 (Safe)</span>
-                        </div>
-                    </div>
-                    <!-- Kitchen Pantry -->
-                    <div class="telemetry-item">
-                        <div class="t-left">
-                            <div class="t-icon"><i class="ph-duotone ph-cooking-pot"></i></div>
-                            <div>
-                                <span class="t-label">Household Pantry Hub</span>
-                                <span class="t-desc">18 Ingredients Tracked • Freshness: 92%</span>
-                            </div>
-                        </div>
-                        <div class="t-right">
-                            <span class="t-val">2 Items Expiring</span>
-                            <span class="t-sub">Zero-Waste Meal Ready</span>
-                        </div>
+                    <div class="card-data">
+                        <span class="price">₹32/kg</span>
+                        <span class="stock">Available: 850 kg • Harvest: Today</span>
                     </div>
                 </div>
-                <div class="card-footer-bar">
-                    <span>Active MongoDB Pipeline • 3 Datasets Live</span>
-                    <a href="supply_chain_dashboard.html">Explore Database &rarr;</a>
+                <div class="floating-card card-2">
+                    <div class="card-header">
+                        <i class="ph-fill ph-truck"></i>
+                        <span>Transit Degradation Monitor</span>
+                    </div>
+                    <div class="card-data">
+                        <span class="price accent-text" style="font-size: 0.95rem;">92% Freshness Score</span>
+                        <span class="detail">Nashik &rarr; Mumbai • 18.8°C / 4.1 Vib</span>
+                    </div>
+                </div>
+                <div class="floating-card card-3">
+                    <div class="card-header">
+                        <i class="ph-fill ph-cooking-pot accent-text"></i>
+                        <span>AI Kitchen Chef</span>
+                    </div>
+                    <div class="card-data">
+                        <span class="detail">Expiring in 2 days: Tomatoes & Coriander</span>
+                        <span class="stock" style="color: var(--primary); font-weight: 600;">Recipe: Shakshuka Ready &rarr;</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- PORTALS SECTION -->
-    <section id="roles" class="roles-section">
+    <!-- COMPACT ROLE SELECTION (REFINED 3 PERSPECTIVES) -->
+    <section id="roles" class="roles-section reveal">
         <div class="section-header">
-            <span class="section-tag">Portal Ecosystem</span>
-            <h2>Dedicated Portals for Every Stakeholder</h2>
-            <p>Explore purpose-built environments designed for cultivators, wholesale traders, and household kitchens.</p>
+            <span class="section-tag">THREE PILLARS • ONE SEAMLESS WORKFLOW</span>
+            <h2>One Platform. Three Tailored Portals.</h2>
+            <p>Select your dashboard below to experience the end-to-end transparent supply chain.</p>
         </div>
         <div class="roles-grid">
             <!-- FARMER CARD -->
             <div class="role-card role-farmer">
                 <div class="role-card-top">
-                    <div class="role-icon-box"><i class="ph-duotone ph-tractor"></i></div>
-                    <span class="role-badge">Producer Command</span>
+                    <div class="role-icon"><i class="ph-duotone ph-tractor"></i></div>
+                    <span class="role-badge farmer-badge">PRODUCER COMMAND</span>
                 </div>
-                <h3>Farmer Portal</h3>
-                <p class="role-desc">Empower cultivators with direct mandi price benchmarking, harvest inventory management, and B2B wholesale order acceptance.</p>
+                <h3>Farmer / Producer</h3>
+                <p class="role-desc">Empower cultivators with real-time mandi intelligence, direct B2B harvest listings, and instant order fulfillment.</p>
+                
+                <!-- PRODUCER PREVIEW MEDIA WITH IMAGES -->
+                <div class="farmer-card-preview-media">
+                    <div class="farmer-mini-avatar">
+                        <img src="farmer-avatar.jpg" alt="Ramesh Patil" class="avatar-mini-img">
+                        <span class="mini-verified-check" title="Verified Master Grower"><i class="ph-fill ph-check-circle"></i></span>
+                    </div>
+                    <div class="farmer-crops-thumb-strip">
+                        <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=200&auto=format&fit=crop&q=80" alt="Roma Tomatoes" title="Roma Tomatoes">
+                        <img src="https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=200&auto=format&fit=crop&q=80" alt="Red Onions" title="Nashik Red Onions">
+                        <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=200&auto=format&fit=crop&q=80" alt="Potatoes" title="Kufri Potatoes">
+                    </div>
+                </div>
+
+                <!-- PIE BREAKDOWN TAGS -->
+                <div class="farmer-pie-preview-row">
+                    <span class="pie-preview-title"><i class="ph-bold ph-chart-pie-slice"></i> Harvest Breakdown:</span>
+                    <div class="pie-preview-chips">
+                        <span class="p-chip"><span class="p-dot" style="background: #E11D48;"></span> Tomatoes (26%)</span>
+                        <span class="p-chip"><span class="p-dot" style="background: #9333EA;"></span> Onions (37%)</span>
+                        <span class="p-chip"><span class="p-dot" style="background: #D97706;"></span> Potatoes (29%)</span>
+                    </div>
+                </div>
+
+                <!-- LIVE PRICE ADVANTAGE CALLOUT -->
+                <div class="role-live-chip">
+                    <span class="pulse-dot green"></span>
+                    <span>Live: +₹4.60/kg Above Mandi • ₹3,42,800 Revenue</span>
+                </div>
+
                 <ul class="role-features">
-                    <li><i class="ph-bold ph-check"></i> <div><strong>Mandi Price Benchmarking:</strong> Compare real-time asking prices against regional APMC averages</div></li>
-                    <li><i class="ph-bold ph-check"></i> <div><strong>Harvest Distribution:</strong> Visualize crop production breakdowns and revenue forecasts</div></li>
-                    <li><i class="ph-bold ph-check"></i> <div><strong>Direct B2B Orders:</strong> Fulfill verified wholesale contracts with zero intermediary cuts</div></li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Harvest Pie & Bar Graphs:</strong> Real-time production distribution</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Profit Simulator:</strong> Slide quantity & price to forecast earnings</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Voice Agri-AI Advisor:</strong> Listen to daily APMC market advisories</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Direct B2B Orders:</strong> Accept contracts with zero middleman cuts</li>
                 </ul>
                 <div class="role-actions-row">
-                    <a href="farmer.html" class="role-launch-btn">
-                        <span>Open Farmer Portal</span>
+                    <a href="farmer.html" class="btn-primary role-launch-btn">
+                        <span>Open Farmer Dashboard & Charts</span>
                         <i class="ph-bold ph-arrow-right"></i>
                     </a>
                 </div>
@@ -138,19 +202,24 @@
             <!-- SHOPKEEPER CARD -->
             <div class="role-card role-shopkeeper">
                 <div class="role-card-top">
-                    <div class="role-icon-box"><i class="ph-duotone ph-storefront"></i></div>
-                    <span class="role-badge">Wholesale Logistics</span>
+                    <div class="role-icon"><i class="ph-duotone ph-storefront"></i></div>
+                    <span class="role-badge shopkeeper-badge">B2B LOGISTICS & PROCUREMENT</span>
                 </div>
-                <h3>Shopkeeper Hub</h3>
-                <p class="role-desc">Procure bulk harvests with transparent farm-gate rates, monitor in-transit conditions, and protect retail margins.</p>
+                <h3>Shopkeeper / Middleman</h3>
+                <p class="role-desc">Procure bulk harvests with transparent farm-gate pricing, monitor in-transit degradation, and optimize retail margins.</p>
+                <div class="role-live-chip">
+                    <span class="pulse-dot amber"></span>
+                    <span>Live: 87.2% Transit Freshness • 14.2% Margin</span>
+                </div>
                 <ul class="role-features">
-                    <li><i class="ph-bold ph-check"></i> <div><strong>B2B Procurement:</strong> Multi-filter bulk crop listings directly from certified growers</div></li>
-                    <li><i class="ph-bold ph-check"></i> <div><strong>Transit Degradation Index:</strong> Monitor temperature and vibration to prevent spoilage</div></li>
-                    <li><i class="ph-bold ph-check"></i> <div><strong>Margin Analytics:</strong> Analyze buy vs. sell prices to optimize wholesale profitability</div></li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Procurement Market:</strong> Multi-filter B2B bulk listings</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Transit Health:</strong> Real-time Degradation Algorithm gauge</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Margin Analytics:</strong> Buy Price vs. Sell Price audit cards</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Demand Forecast AI:</strong> Predictive procurement advisory</li>
                 </ul>
                 <div class="role-actions-row">
-                    <a href="shopkeeper.html" class="role-launch-btn">
-                        <span>Open Shopkeeper Hub</span>
+                    <a href="shopkeeper.html" class="btn-primary role-launch-btn shopkeeper-theme">
+                        <span>Launch Shopkeeper Hub</span>
                         <i class="ph-bold ph-arrow-right"></i>
                     </a>
                 </div>
@@ -159,19 +228,24 @@
             <!-- CUSTOMER CARD -->
             <div class="role-card role-customer">
                 <div class="role-card-top">
-                    <div class="role-icon-box"><i class="ph-duotone ph-cooking-pot"></i></div>
-                    <span class="role-badge">Consumer Pantry</span>
+                    <div class="role-icon"><i class="ph-duotone ph-cooking-pot"></i></div>
+                    <span class="role-badge customer-badge">CONSUMER KITCHEN</span>
                 </div>
-                <h3>Kitchen &amp; Pantry Manager</h3>
-                <p class="role-desc">Track pantry ingredient freshness, receive shelf-life alerts, and plan wholesome meals to eliminate household food waste.</p>
+                <h3>End Customer / Kitchen</h3>
+                <p class="role-desc">Shop farm-fresh produce with complete origin transparency, track home pantry shelf-life, and generate zero-waste recipes.</p>
+                <div class="role-live-chip">
+                    <span class="pulse-dot emerald"></span>
+                    <span>Live: 4 Items Expiring • Zero-Waste Chef</span>
+                </div>
                 <ul class="role-features">
-                    <li><i class="ph-bold ph-check"></i> <div><strong>Pantry Shelf-Life Radar:</strong> Track storage temperature and days remaining for each staple</div></li>
-                    <li><i class="ph-bold ph-check"></i> <div><strong>Origin Traceability:</strong> Verify farm-gate sourcing and handling history for every item</div></li>
-                    <li><i class="ph-bold ph-check"></i> <div><strong>Zero-Waste Recipe Engine:</strong> Generate tailored meal ideas from expiring ingredients</div></li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Fresh Storefront:</strong> Direct retail buying to your pantry</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>My Pantry Tracker:</strong> Visual storage conditions & shelf-life</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Expiry Radar:</strong> Green, Yellow & Red countdown tags</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>AI Recipe Chef:</strong> Generates gourmet meals from expiring items</li>
                 </ul>
                 <div class="role-actions-row">
-                    <a href="customer.html" class="role-launch-btn">
-                        <span>Open Kitchen Portal</span>
+                    <a href="customer.html" class="btn-primary role-launch-btn customer-theme">
+                        <span>Launch Consumer Kitchen</span>
                         <i class="ph-bold ph-arrow-right"></i>
                     </a>
                 </div>
@@ -179,160 +253,137 @@
         </div>
     </section>
 
-    <!-- WORKFLOW SECTION -->
-    <section id="how-it-works" class="flow-section">
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works" class="flow-section reveal">
         <div class="section-header">
-            <span class="section-tag">Supply Chain Pipeline</span>
-            <h2>How the Connected Network Operates</h2>
-            <p>A continuous data loop tracking produce from the soil to the dinner table.</p>
+            <h2>The Forage Journey</h2>
+            <p>A seamless process from the soil to the table.</p>
         </div>
         <div class="flow-container">
             <div class="flow-card">
-                <span class="step-number">01</span>
-                <h3>Direct Harvest &amp; Mandi Benchmarking</h3>
-                <p>Cultivators register harvest batches with certified quality grades and compare farm-gate asking rates against regional APMC mandi market indices.</p>
+                <div class="step-badge">01</div>
+                <h3>Farmers Produce</h3>
+                <p>Farmers list their crops, availability, and transparent pricing.</p>
             </div>
+            <div class="flow-connector"><i class="ph ph-caret-right"></i></div>
+            
             <div class="flow-card">
-                <span class="step-number">02</span>
-                <h3>Cold-Chain Logistics &amp; Degradation Telemetry</h3>
-                <p>Wholesalers track temperature and route vibrations in transit, calculating degradation indices to ensure produce arrives at optimal market freshness.</p>
+                <div class="step-badge">02</div>
+                <h3>Businesses Source</h3>
+                <p>Shopkeepers easily discover and purchase bulk agricultural products.</p>
             </div>
+            <div class="flow-connector"><i class="ph ph-caret-right"></i></div>
+            
             <div class="flow-card">
-                <span class="step-number">03</span>
-                <h3>Household Pantry &amp; Zero-Waste Planning</h3>
-                <p>Consumers receive fresh produce with origin confidence, monitor pantry shelf-life with expiry warnings, and cook gourmet meals that minimize waste.</p>
+                <div class="step-badge">03</div>
+                <h3>Consumers Buy</h3>
+                <p>End customers purchase fresh products with complete market confidence.</p>
+            </div>
+            <div class="flow-connector"><i class="ph ph-caret-right"></i></div>
+            
+            <div class="flow-card highlight-card">
+                <div class="step-badge">04</div>
+                <h3>Everyone Benefits</h3>
+                <p>A completely transparent supply chain that maximizes value for all.</p>
             </div>
         </div>
     </section>
 
-    <!-- MARKETPLACE SECTION -->
-    <section id="marketplace" class="marketplace-section">
+    <!-- MARKETPLACE PREVIEW -->
+    <section id="marketplace" class="marketplace-section reveal">
         <div class="section-header">
-            <span class="section-tag">Real-Time Index</span>
-            <h2>Current Harvest Price Benchmarks</h2>
-            <p>Transparent pricing comparing farm-gate rates against regional APMC averages.</p>
+            <h2>Live Marketplace</h2>
+            <div class="market-filters">
+                <div class="search-bar">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" placeholder="Search crops...">
+                </div>
+                <button type="button" class="filter-btn">Category <i class="ph ph-caret-down"></i></button>
+                <button type="button" class="filter-btn">Location <i class="ph ph-caret-down"></i></button>
+                <button type="button" class="filter-btn">Price <i class="ph ph-caret-down"></i></button>
+            </div>
         </div>
         <div class="market-grid">
             <div class="crop-card">
-                <div class="crop-card-top">
-                    <div class="crop-icon-name">
-                        <i class="ph-duotone ph-plant"></i>
+                <div class="crop-img-placeholder tomatoes"></div>
+                <div class="crop-info">
+                    <div class="crop-title-row">
                         <h4>Tomatoes</h4>
-                    </div>
-                    <span class="crop-hub-tag">Nashik Hub</span>
-                </div>
-                <div class="crop-info">
-                    <div class="crop-price-row">
                         <span class="crop-price">₹32/kg</span>
-                        <span class="crop-spread">+₹4.60 vs Mandi</span>
                     </div>
-                    <p class="crop-stock"><i class="ph ph-package"></i> 850 kg available</p>
+                    <p class="crop-stock"><i class="ph ph-box-arrow-down"></i> 850 kg available</p>
                 </div>
             </div>
             <div class="crop-card">
-                <div class="crop-card-top">
-                    <div class="crop-icon-name">
-                        <i class="ph-duotone ph-leaf"></i>
-                        <h4>Red Onions</h4>
-                    </div>
-                    <span class="crop-hub-tag">Lasalgaon Hub</span>
-                </div>
+                <div class="crop-img-placeholder onions"></div>
                 <div class="crop-info">
-                    <div class="crop-price-row">
+                    <div class="crop-title-row">
+                        <h4>Onions</h4>
                         <span class="crop-price">₹28/kg</span>
-                        <span class="crop-spread">+₹3.80 vs Mandi</span>
                     </div>
-                    <p class="crop-stock"><i class="ph ph-package"></i> 1,200 kg available</p>
+                    <p class="crop-stock"><i class="ph ph-box-arrow-down"></i> 1,200 kg available</p>
                 </div>
             </div>
             <div class="crop-card">
-                <div class="crop-card-top">
-                    <div class="crop-icon-name">
-                        <i class="ph-duotone ph-grains"></i>
+                <div class="crop-img-placeholder potatoes"></div>
+                <div class="crop-info">
+                    <div class="crop-title-row">
                         <h4>Potatoes</h4>
-                    </div>
-                    <span class="crop-hub-tag">Pune Hub</span>
-                </div>
-                <div class="crop-info">
-                    <div class="crop-price-row">
                         <span class="crop-price">₹24/kg</span>
-                        <span class="crop-spread">+₹3.50 vs Mandi</span>
                     </div>
-                    <p class="crop-stock"><i class="ph ph-package"></i> 950 kg available</p>
+                    <p class="crop-stock"><i class="ph ph-box-arrow-down"></i> 950 kg available</p>
                 </div>
             </div>
             <div class="crop-card">
-                <div class="crop-card-top">
-                    <div class="crop-icon-name">
-                        <i class="ph-duotone ph-bowl-food"></i>
-                        <h4>Sharbati Wheat</h4>
-                    </div>
-                    <span class="crop-hub-tag">MP Hub</span>
-                </div>
+                <div class="crop-img-placeholder wheat"></div>
                 <div class="crop-info">
-                    <div class="crop-price-row">
+                    <div class="crop-title-row">
+                        <h4>Wheat</h4>
                         <span class="crop-price">₹42/kg</span>
-                        <span class="crop-spread">+₹4.00 vs Mandi</span>
                     </div>
-                    <p class="crop-stock"><i class="ph ph-package"></i> 2,400 kg available</p>
+                    <p class="crop-stock"><i class="ph ph-box-arrow-down"></i> 2,400 kg available</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- DATABASE EXPLORER PREVIEW -->
-    <section class="db-preview-section">
-        <div class="db-preview-box">
-            <div>
-                <span class="section-tag">Data Architecture</span>
-                <h2 style="margin-bottom: 0.85rem;">Underpinned by Unified Database Schemas</h2>
-                <p style="margin-bottom: 1.5rem;">Forage runs on three interconnected data collections that connect farm production data, in-transit telemetry sensors, and household pantry shelf-life tables.</p>
-                <a href="supply_chain_dashboard.html" class="btn-primary"><i class="ph ph-database"></i> Launch Database Explorer &rarr;</a>
+    <!-- DASHBOARD & AI PREVIEW -->
+    <section class="software-preview reveal">
+        <div class="preview-grid">
+            <div class="dashboard-preview">
+                <h3>Everything you need, in one place.</h3>
+                <div class="dash-ui">
+                    <div class="dash-nav"><div class="dash-dot"></div><div class="dash-dot"></div><div class="dash-dot"></div></div>
+                    <div class="dash-widgets">
+                        <div class="widget"><span class="w-label">Revenue</span><span class="w-val">₹42,500</span><div class="bar-chart"><div class="bar b1"></div><div class="bar b2"></div><div class="bar b3"></div></div></div>
+                        <div class="widget"><span class="w-label">Orders</span><span class="w-val">124</span><div class="line-chart"></div></div>
+                        <div class="widget"><span class="w-label">Inventory</span><span class="w-val">1.2T</span></div>
+                        <div class="widget"><span class="w-label">Market Price</span><span class="w-val up">&uarr; 2.4%</span></div>
+                    </div>
+                </div>
             </div>
-            <div class="db-collections-list">
-                <div class="db-col-item">
-                    <div class="col-info">
-                        <i class="ph-duotone ph-currency-inr"></i>
-                        <div>
-                            <div class="col-title">supply_chain_price_index</div>
-                            <div class="col-desc">Mandi benchmark prices, farm-gate asking rates, and wholesale markups</div>
-                        </div>
+            
+            <div class="ai-preview">
+                <h3>Intelligence for every step.</h3>
+                <div class="chat-ui">
+                    <div class="chat-message user-msg">
+                        <p>Should I sell my tomatoes now or wait?</p>
                     </div>
-                    <span class="col-count">50+ Records</span>
-                </div>
-                <div class="db-col-item">
-                    <div class="col-info">
-                        <i class="ph-duotone ph-truck"></i>
-                        <div>
-                            <div class="col-title">transit_degradation_logs</div>
-                            <div class="col-desc">Cold-chain temperature, vibration indices, and spoilage prevention</div>
-                        </div>
+                    <div class="chat-message ai-msg">
+                        <div class="ai-icon"><i class="ph-fill ph-sparkle"></i></div>
+                        <p>Based on current market trends, demand is increasing. Consider monitoring prices as predictions show a 5% increase by weekend.</p>
                     </div>
-                    <span class="col-count">Telemetry Active</span>
-                </div>
-                <div class="db-col-item">
-                    <div class="col-info">
-                        <i class="ph-duotone ph-cooking-pot"></i>
-                        <div>
-                            <div class="col-title">pantry_ingredients_shelf_life</div>
-                            <div class="col-desc">Storage requirements, shelf-life duration, and zero-waste recipes</div>
-                        </div>
-                    </div>
-                    <span class="col-count">18 Ingredients</span>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- CTA -->
-    <section class="cta-section">
+    <section class="cta-section reveal">
         <div class="cta-content">
-            <h2>The Future of Agriculture is Transparent.</h2>
-            <p>Whether you cultivate harvests, manage wholesale logistics, or cook at home, Forage unites the agricultural journey on a single reliable platform.</p>
-            <button type="button" class="btn-cta-light open-modal" data-role="General">
-                <span>Enter Forage Portals</span>
-                <i class="ph-bold ph-arrow-right"></i>
-            </button>
+            <h2>The future of agriculture is connected.</h2>
+            <p>"Whether you grow it, trade it, or buy it — Forage brings the entire journey together."</p>
+            <button type="button" class="btn-primary large open-modal" data-role="General">Get Started &rarr;</button>
         </div>
     </section>
 
@@ -340,29 +391,30 @@
     <footer>
         <div class="footer-grid">
             <div class="footer-brand">
-                <div class="brand-text">Forage<span class="dot">.</span></div>
-                <p>Transparent agricultural supply chain connecting farmers, wholesale markets, and households.</p>
-            </div>
-            <div class="footer-links">
-                <h4>Portals</h4>
-                <a href="farmer.html">Farmer Command</a>
-                <a href="shopkeeper.html">Shopkeeper Hub</a>
-                <a href="customer.html">Consumer Kitchen</a>
+                <div class="logo">
+                    <span class="brand-text">Forage.</span>
+                </div>
+                <p>Connecting the agricultural ecosystem.</p>
             </div>
             <div class="footer-links">
                 <h4>Platform</h4>
-                <a href="app.html">Master Cockpit</a>
-                <a href="supply_chain_dashboard.html">Database Explorer</a>
-                <a href="#how-it-works">Workflow</a>
+                <a href="#">Farmer</a>
+                <a href="#">Shopkeeper</a>
+                <a href="#">Customer</a>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <a href="#">About</a>
+                <a href="#">Features</a>
             </div>
             <div class="footer-links">
                 <h4>Resources</h4>
-                <a href="#marketplace">Market Prices</a>
-                <a href="https://github.com/yashkhandar001/forage" target="_blank">GitHub Repository</a>
+                <a href="#">How It Works</a>
+                <a href="#">Help</a>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 Forage Agricultural Logistics Platform. All rights reserved.</p>
+            <p>&copy; 2026 Forage</p>
             <div class="legal">
                 <a href="#">Privacy</a>
                 <a href="#">Terms</a>
@@ -373,59 +425,61 @@
     <!-- LOGIN MODAL WITH PORTAL ROUTING -->
     <div class="modal-overlay" id="login-modal">
         <div class="modal-container">
-            <button type="button" class="close-modal" aria-label="Close modal"><i class="ph ph-x"></i></button>
+            <button type="button" class="close-modal"><i class="ph ph-x"></i></button>
             <div class="modal-header">
-                <div class="brand-text" style="font-size: 1.6rem; margin-bottom: 0.25rem;">Forage<span class="dot">.</span></div>
+                <span class="brand-text" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">Forage.</span>
                 <h3 id="modal-title">Access Forage Portals</h3>
-                <p>Select your role to enter the appropriate dashboard.</p>
+                <p>Select your persona to enter the respective dashboard.</p>
             </div>
             
+            <!-- Quick Role Select Cards inside Modal -->
             <div class="modal-role-selector">
-                <div class="modal-role-card active" data-target-role="Farmer">
-                    <i class="ph-duotone ph-tractor"></i>
+                <button type="button" class="modal-role-card active" data-target-role="Farmer" data-url="farmer.html">
+                    <i class="ph-bold ph-tractor"></i>
                     <span class="role-name">Farmer</span>
                     <span class="role-hint">Producer Hub</span>
-                </div>
-                <div class="modal-role-card" data-target-role="Shopkeeper">
-                    <i class="ph-duotone ph-storefront"></i>
+                </button>
+                <button type="button" class="modal-role-card" data-target-role="Shopkeeper" data-url="shopkeeper.html">
+                    <i class="ph-bold ph-storefront"></i>
                     <span class="role-name">Shopkeeper</span>
-                    <span class="role-hint">Wholesale</span>
-                </div>
-                <div class="modal-role-card" data-target-role="Customer">
-                    <i class="ph-duotone ph-cooking-pot"></i>
+                    <span class="role-hint">B2B Trade</span>
+                </button>
+                <button type="button" class="modal-role-card" data-target-role="Customer" data-url="customer.html">
+                    <i class="ph-bold ph-cooking-pot"></i>
                     <span class="role-name">Customer</span>
-                    <span class="role-hint">Kitchen</span>
-                </div>
+                    <span class="role-hint">Kitchen & Pantry</span>
+                </button>
             </div>
 
             <form class="login-form" id="loginForm">
                 <input type="hidden" id="selectedRoleInput" value="Farmer">
                 <div class="input-group">
-                    <label for="loginEmail">Email / Identification</label>
-                    <input type="text" id="loginEmail" placeholder="farmer.demo@forage.ag" value="farmer.demo@forage.ag">
+                    <label>Email / Phone</label>
+                    <input type="text" id="loginEmail" placeholder="farmer@forage.ag" value="farmer.demo@forage.ag">
                 </div>
                 <div class="input-group">
-                    <label for="password-input">Access Code</label>
+                    <label>Access Code</label>
                     <div class="password-wrapper">
                         <input type="password" id="password-input" placeholder="••••••••" value="demo1234">
-                        <button type="button" class="toggle-password" aria-label="Toggle password visibility"><i class="ph ph-eye"></i></button>
+                        <button type="button" class="toggle-password"><i class="ph ph-eye"></i></button>
                     </div>
                 </div>
                 <button type="submit" class="btn-primary full-width" id="modalSubmitBtn">
-                    <span>Enter Portal</span> &rarr;
+                    <span>Enter Dashboard</span> &rarr;
                 </button>
-                <div class="modal-divider"><span>OR DIRECT ACCESS</span></div>
+                <div class="modal-divider"><span>OR QUICK ACCESS</span></div>
                 <div class="quick-demo-links">
-                    <a href="farmer.html" class="quick-demo-btn"><i class="ph ph-tractor"></i> Farmer</a>
-                    <a href="shopkeeper.html" class="quick-demo-btn"><i class="ph ph-storefront"></i> Shopkeeper</a>
-                    <a href="customer.html" class="quick-demo-btn"><i class="ph ph-cooking-pot"></i> Kitchen</a>
+                    <a href="farmer.html" class="quick-demo-btn"><i class="ph ph-tractor"></i> Demo Farmer</a>
+                    <a href="shopkeeper.html" class="quick-demo-btn"><i class="ph ph-storefront"></i> Demo Shopkeeper</a>
+                    <a href="customer.html" class="quick-demo-btn"><i class="ph ph-cooking-pot"></i> Demo Customer</a>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="toast" id="toast">Simulating authentication...</div>
+    <div class="toast" id="toast">Functionality simulated for frontend demo.</div>
 
     <script src="script.js"></script>
+    <script src="gl.js"></script>
 </body>
 </html>

@@ -12,20 +12,53 @@
 </head>
 <body class="customer-body">
 
-<!-- TOP TELEMETRY / FRESHNESS STATUS BAR -->
-    <header class="kitchen-telemetry-bar">
+<!-- UNIFIED GLOBAL SWITCHER BAR -->
+<div id="forage-unified-bar" style="background: #090e17; border-bottom: 1px solid rgba(255,255,255,0.09); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 0.8rem; z-index: 9999; position: relative;">
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <a href="app.html" style="font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 6px; font-size: 0.95rem;">
+      <span style="color: #10b981;">●</span> Forage Unified
+    </a>
+    <span style="color: #64748b;">|</span>
+    <span style="color: #94a3b8; font-size: 0.75rem;">Fullstack Supply Chain Hub</span>
+  </div>
+  <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+    <a href="app.html" style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 5px;">
+      🎛️ Master Cockpit
+    </a>
+    <a href="farmer.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      🌾 Farmer
+    </a>
+    <a href="shopkeeper.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      🏪 Shopkeeper
+    </a>
+    <a href="customer.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      🥗 Pantry
+    </a>
+    <a href="supply_chain_dashboard.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      📊 MongoDB DB
+    </a>
+    <a href="index.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      🏠 Home
+    </a>
+  </div>
+</div>
+
+
+    <!-- GLSL BACKGROUND CANVAS -->
+    <canvas id="gl-canvas"></canvas>
+
+    <!-- TOP TELEMETRY / FRESHNESS STATUS BAR -->
+    <div class="kitchen-telemetry-bar">
         <div class="kitchen-telemetry-content">
             <span class="kitchen-dot"></span>
-            <span><strong>KITCHEN INTELLIGENCE:</strong> <span id="expiringAlertBanner" class="alert-highlight">3 items expiring soon</span> in your pantry &bull; Zero-Waste Recipe Engine Active</span>
+            <span><strong>KITCHEN INTELLIGENCE:</strong> <span id="expiringAlertBanner" class="alert-highlight">3 items expiring soon</span> in your pantry! Use our AI Chef to generate zero-waste recipes.</span>
         </div>
         <div class="hub-nav-links">
-            <a href="index.html" class="hub-link"><i class="ph ph-house"></i> Overview</a>
+            <a href="index.html" class="hub-link"><i class="ph ph-arrow-left"></i> Home</a>
             <a href="farmer.html" class="hub-link"><i class="ph ph-tractor"></i> Farmer</a>
             <a href="shopkeeper.html" class="hub-link"><i class="ph ph-storefront"></i> Shopkeeper</a>
-            <a href="supply_chain_dashboard.html" class="hub-link"><i class="ph ph-database"></i> DB Explorer</a>
-            <a href="app.html" class="hub-link" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #34d399;"><i class="ph ph-squares-four"></i> Cockpit</a>
         </div>
-    </header>
+    </div>
 
     <!-- MAIN APP WRAPPER -->
     <div class="app-layout">
@@ -347,7 +380,7 @@
     <!-- TOAST -->
     <div class="toast" id="toast">Added to your Kitchen Pantry!</div>
 
-    
+    <script src="gl.js"></script>
     <script src="customer.js"></script>
 </body>
 </html>

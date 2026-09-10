@@ -12,20 +12,56 @@
 </head>
 <body class="farmer-body">
 
-<!-- TOP STATUS & NAVIGATION BAR -->
-    <header class="farmer-top-strip">
+<!-- UNIFIED GLOBAL SWITCHER BAR -->
+<div id="forage-unified-bar" style="background: #090e17; border-bottom: 1px solid rgba(255,255,255,0.09); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 0.8rem; z-index: 9999; position: relative;">
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <a href="app.html" style="font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 6px; font-size: 0.95rem;">
+      <span style="color: #10b981;">●</span> Forage Unified
+    </a>
+    <span style="color: #64748b;">|</span>
+    <span style="color: #94a3b8; font-size: 0.75rem;">Fullstack Supply Chain Hub</span>
+  </div>
+  <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+    <a href="app.html" style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 5px;">
+      🎛️ Master Cockpit
+    </a>
+    <a href="farmer.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      🌾 Farmer
+    </a>
+    <a href="shopkeeper.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      🏪 Shopkeeper
+    </a>
+    <a href="customer.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      🥗 Pantry
+    </a>
+    <a href="supply_chain_dashboard.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      📊 MongoDB DB
+    </a>
+    <a href="index.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      🏠 Home
+    </a>
+  </div>
+</div>
+
+
+    <!-- GLSL AMBIENT BACKGROUND CANVAS -->
+    <canvas id="gl-canvas"></canvas>
+
+    <!-- CONFETTI CELEBRATION OVERLAY CANVAS -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- TOP HARVEST STATUS BAR -->
+    <div class="farmer-top-strip">
         <div class="strip-content">
             <span class="mandi-dot"></span>
-            <span><strong>FARM COMMAND ONLINE:</strong> Nashik APMC Yard Rate: Tomatoes <span class="rate-up">&#9650; +8.4%</span> &bull; Soil Moisture: <strong>68% Optimal</strong> &bull; Mandi Benchmark Active</span>
+            <span><strong>FARM COMMAND ONLINE:</strong> Nashik APMC Yard Rate: Tomatoes <span class="rate-up">&#9650; +8.4%</span> • Soil Moisture Index: <strong>68% Optimal</strong> • Direct Wholesale Link: Active</span>
         </div>
         <div class="strip-portals">
-            <a href="index.html" class="strip-link"><i class="ph ph-house"></i> Overview</a>
+            <a href="index.html" class="strip-link"><i class="ph ph-arrow-left"></i> Home</a>
             <a href="shopkeeper.html" class="strip-link"><i class="ph ph-storefront"></i> Shopkeeper Hub</a>
             <a href="customer.html" class="strip-link"><i class="ph ph-cooking-pot"></i> Consumer Kitchen</a>
-            <a href="supply_chain_dashboard.html" class="strip-link"><i class="ph ph-database"></i> DB Explorer</a>
-            <a href="app.html" class="strip-link" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #34d399;"><i class="ph ph-squares-four"></i> Cockpit</a>
         </div>
-    </header>
+    </div>
 
     <!-- MAIN APP LAYOUT -->
     <div class="command-layout">
@@ -784,7 +820,7 @@
     </div>
 
     <!-- SCRIPTS -->
-    
+    <script src="gl.js"></script>
     <script src="farmer.js?v=2.1"></script>
 </body>
 </html>
