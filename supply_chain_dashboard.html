@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supply Chain DB Explorer | MongoDB Collections</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0f18;
+      --bg-secondary: #111a2e;
+      --bg-card: rgba(22, 33, 58, 0.7);
+      --bg-card-hover: rgba(30, 45, 78, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(16, 185, 129, 0.3);
+      --accent-emerald: #10b981;
+      --accent-emerald-glow: rgba(16, 185, 129, 0.15);
+      --accent-cyan: #06b6d4;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-indigo: #6366f1;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 10% 20%, #0d1629 0%, #080d16 100%);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      line-height: 1.5;
+      padding: 24px;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      top: -100px;
+      right: -100px;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.12), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .ambient-glow-2 {
+      position: fixed;
+      bottom: -150px;
+      left: -100px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.08), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .mongo-badge-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    }
+
+    .mongo-badge-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #ffffff;
+    }
+
+    .title-area h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-area p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .db-pill {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .stats-header-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.8125rem;
+      backdrop-filter: blur(12px);
+    }
+    .stat-chip strong {
+      color: var(--accent-emerald);
+      font-weight: 700;
+      margin-left: 4px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 16px 20px;
+      backdrop-filter: blur(16px);
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .kpi-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--card-accent, var(--accent-emerald));
+    }
+
+    .kpi-label {
+      font-size: 0.775rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .kpi-value {
+      font-size: 1.625rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+    }
+
+    .kpi-meta {
+      font-size: 0.775rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .nav-controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .tabs-wrapper {
+      display: flex;
+      background: rgba(17, 26, 46, 0.8);
+      border: 1px solid var(--border-subtle);
+      padding: 4px;
+      border-radius: 12px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--accent-emerald);
+      color: #06241a;
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);
+    }
+
+    .tab-count {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+    }
+
+    .search-filter-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      max-width: 420px;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 9px 14px 9px 38px;
+      color: var(--text-main);
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+      font-family: var(--font-sans);
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-emerald);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+
+    .table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(16px);
+      margin-bottom: 24px;
+    }
+
+    .table-responsive {
+      max-height: 600px;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background: #111b30;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.725rem;
+      letter-spacing: 0.05em;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      transition: color 0.15s ease;
+    }
+
+    thead th:hover {
+      color: var(--accent-emerald);
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      transition: background 0.15s ease;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    tbody td {
+      padding: 12px 16px;
+      color: #cbd5e1;
+      white-space: nowrap;
+    }
+
+    .font-mono {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-commodity {
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .badge-market {
+      background: rgba(6, 182, 212, 0.12);
+      color: #67e8f9;
+      border: 1px solid rgba(6, 182, 212, 0.25);
+    }
+
+    .badge-route {
+      background: rgba(245, 158, 11, 0.12);
+      color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    .badge-fresh-good {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+    .badge-fresh-med {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+    }
+    .badge-fresh-crit {
+      background: rgba(244, 63, 94, 0.15);
+      color: #fb7185;
+    }
+
+    .action-btn-inspect {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      transition: all 0.15s ease;
+    }
+
+    .action-btn-inspect:hover {
+      background: var(--accent-emerald);
+      color: #06241a;
+      border-color: var(--accent-emerald);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: #111a2e;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 680px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent-emerald);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    .modal-close:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .json-viewer {
+      background: #080d16;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: #e2e8f0;
+      max-height: 420px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .code-view-container {
+      background: #080d16;
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: #94a3b8;
+      overflow-x: auto;
+      display: none;
+      margin-bottom: 24px;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.8125rem;
+      color: var(--text-dim);
+      padding-top: 16px;
+      border-top: 1px solid var(--border-subtle);
+    }
+  </style>
+</head>
+<body>
+
+<!-- UNIFIED GLOBAL SWITCHER BAR -->
+<div id="forage-unified-bar" style="background: #090e17; border-bottom: 1px solid rgba(255,255,255,0.09); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 0.8rem; z-index: 9999; position: relative;">
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <a href="app.html" style="font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 6px; font-size: 0.95rem;">
+      <span style="color: #10b981;">●</span> Forage Unified
+    </a>
+    <span style="color: #64748b;">|</span>
+    <span style="color: #94a3b8; font-size: 0.75rem;">Fullstack Supply Chain Hub</span>
+  </div>
+  <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+    <a href="app.html" style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 5px;">
+      🎛️ Master Cockpit
+    </a>
+    <a href="farmer.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      🌾 Farmer
+    </a>
+    <a href="shopkeeper.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      🏪 Shopkeeper
+    </a>
+    <a href="customer.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      🥗 Pantry
+    </a>
+    <a href="supply_chain_dashboard.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      📊 MongoDB DB
+    </a>
+    <a href="index.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+      🏠 Home
+    </a>
+  </div>
+</div>
+
+  <div class="ambient-glow"></div>
+  <div class="ambient-glow-2"></div>
+
+  <div class="container">
+    <header>
+      <div class="brand-wrap">
+        <div class="mongo-badge-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C12 2 4.5 9.5 4.5 15C4.5 18.5 7.5 22 12 22C16.5 22 19.5 18.5 19.5 15C19.5 9.5 12 2 12 2ZM12 20.2C8.6 20.2 6.5 17.5 6.5 15C6.5 11.2 10.4 6.5 12 4.6C13.6 6.5 17.5 11.2 17.5 15C17.5 17.5 15.4 20.2 12 20.2Z"/><path d="M12 4.6V20.2C11.9 20.2 11.7 20.2 11.6 20.1C8.6 19.5 6.5 17.3 6.5 15C6.5 11.2 10.4 6.5 12 4.6Z" opacity="0.5"/></svg>
+        </div>
+        <div class="title-area">
+          <h1>Supply Chain Database <span class="db-pill"><span class="pulse-dot"></span> supply_chain_db</span></h1>
+          <p>MongoDB Database Explorer &bull; 3 Collections &bull; 90 Cleaned Documents</p>
+        </div>
+      </div>
+      <div class="stats-header-bar">
+        <div class="stat-chip">Database: <strong>supply_chain_db</strong></div>
+        <div class="stat-chip">Collections: <strong>3</strong></div>
+        <div class="stat-chip">Total Records: <strong id="totalDocCount">90</strong></div>
+      </div>
+    </header>
+
+    <div class="kpi-grid" id="kpiCards"></div>
+
+    <div class="nav-controls-bar">
+      <div class="tabs-wrapper">
+        <button class="tab-btn active" id="tabPriceIndex" onclick="switchTab('price_index')">
+          📈 price_index <span class="tab-count">30</span>
+        </button>
+        <button class="tab-btn" id="tabPantry" onclick="switchTab('pantry_inventory')">
+          🥫 pantry_inventory <span class="tab-count">30</span>
+        </button>
+        <button class="tab-btn" id="tabTransit" onclick="switchTab('transit_logs')">
+          🚚 transit_logs <span class="tab-count">30</span>
+        </button>
+        <button class="tab-btn" id="tabCode" onclick="switchTab('code_view')">
+          💻 PyMongo Script
+        </button>
+      </div>
+
+      <div class="search-filter-box" id="searchContainer">
+        <div class="search-input-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search across all fields..." oninput="handleSearch()">
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container" id="tableContainer">
+      <div class="table-responsive">
+        <table id="dataTable">
+          <thead id="tableHead"></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="code-view-container" id="codeContainer">
+      <pre><code># PyMongo Data Ingestion Script (import_supply_chain_data.py)
+from pymongo import MongoClient
+from datetime import datetime
+
+client = MongoClient("mongodb://localhost:27017/")
+db = client["supply_chain_db"]
+
+# 1. price_index collection
+# Fields: record_id, date (datetime), market, commodity,
+#         farm_gate_price_inr_per_kg (float), wholesale_price_inr_per_kg (float),
+#         retail_price_inr_per_kg (float), price_index (float)
+db["price_index"].insert_many(price_index_rows)
+
+# 2. pantry_inventory collection
+# Fields: record_id, ingredient, quantity (float), unit, storage_condition,
+#         expected_shelf_life_days (int), remaining_shelf_life_days (int)
+db["pantry_inventory"].insert_many(pantry_rows)
+
+# 3. transit_logs collection
+# Fields: log_id, dispatch_date (datetime), route, produce, transit_duration_hours (int),
+#         avg_temperature_c (float), avg_humidity_pct (int), vibration_index (float),
+#         estimated_damage_pct (float), freshness_score (float)
+db["transit_logs"].insert_many(transit_rows)</code></pre>
+    </div>
+
+    <footer>
+      <div>Target database: <code class="font-mono">supply_chain_db</code> &bull; Driver: <code class="font-mono">pymongo 4.18.0</code></div>
+      <div>Interactive Visual Explorer &bull; Auto-casted Types (int, float, datetime)</div>
+    </footer>
+  </div>
+
+  <div class="modal-overlay" id="docModal" onclick="closeModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modalTitle">MongoDB Document (BSON)</h3>
+        <button class="modal-close" onclick="hideModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <pre class="json-viewer" id="modalJson"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DB_DATA = {"price_index": [{"record_id": "SP001", "date": "2026-01-01", "market": "Mumbai", "commodity": "Tomato", "farm_gate_price_inr_per_kg": 27.45, "wholesale_price_inr_per_kg": 32.01, "retail_price_inr_per_kg": 45.19, "price_index": 150.6, "_id": "6aa2b21479963966b44c4aa2"}, {"record_id": "SP002", "date": "2026-01-04", "market": "Pune", "commodity": "Potato", "farm_gate_price_inr_per_kg": 24.55, "wholesale_price_inr_per_kg": 28.3, "retail_price_inr_per_kg": 37.12, "price_index": 132.6, "_id": "6aa2b21479963966b44c4aa3"}, {"record_id": "SP003", "date": "2026-01-07", "market": "Nashik", "commodity": "Onion", "farm_gate_price_inr_per_kg": 31.01, "wholesale_price_inr_per_kg": 35.67, "retail_price_inr_per_kg": 44.36, "price_index": 138.6, "_id": "6aa2b21479963966b44c4aa4"}, {"record_id": "SP004", "date": "2026-01-10", "market": "Ahmedabad", "commodity": "Carrot", "farm_gate_price_inr_per_kg": 41.94, "wholesale_price_inr_per_kg": 52.95, "retail_price_inr_per_kg": 67.85, "price_index": 169.6, "_id": "6aa2b21479963966b44c4aa5"}, {"record_id": "SP005", "date": "2026-01-13", "market": "Bengaluru", "commodity": "Spinach", "farm_gate_price_inr_per_kg": 22.63, "wholesale_price_inr_per_kg": 25.58, "retail_price_inr_per_kg": 31.14, "price_index": 124.6, "_id": "6aa2b21479963966b44c4aa6"}, {"record_id": "SP006", "date": "2026-01-16", "market": "Delhi", "commodity": "Mango", "farm_gate_price_inr_per_kg": 59.6, "wholesale_price_inr_per_kg": 74.33, "retail_price_inr_per_kg": 90.61, "price_index": 129.4, "_id": "6aa2b21479963966b44c4aa7"}, {"record_id": "SP007", "date": "2026-01-19", "market": "Mumbai", "commodity": "Banana", "farm_gate_price_inr_per_kg": 36.72, "wholesale_price_inr_per_kg": 41.04, "retail_price_inr_per_kg": 54.97, "price_index": 122.2, "_id": "6aa2b21479963966b44c4aa8"}, {"record_id": "SP008", "date": "2026-01-22", "market": "Pune", "commodity": "Apple", "farm_gate_price_inr_per_kg": 98.24, "wholesale_price_inr_per_kg": 130.3, "retail_price_inr_per_kg": 183.45, "price_index": 152.9, "_id": "6aa2b21479963966b44c4aa9"}, {"record_id": "SP009", "date": "2026-01-25", "market": "Nashik", "commodity": "Cabbage", "farm_gate_price_inr_per_kg": 23.14, "wholesale_price_inr_per_kg": 26.83, "retail_price_inr_per_kg": 36.24, "price_index": 120.8, "_id": "6aa2b21479963966b44c4aaa"}, {"record_id": "SP010", "date": "2026-01-28", "market": "Ahmedabad", "commodity": "Cauliflower", "farm_gate_price_inr_per_kg": 28.5, "wholesale_price_inr_per_kg": 32.29, "retail_price_inr_per_kg": 46.2, "price_index": 132.0, "_id": "6aa2b21479963966b44c4aab"}, {"record_id": "SP011", "date": "2026-01-31", "market": "Bengaluru", "commodity": "Tomato", "farm_gate_price_inr_per_kg": 27.64, "wholesale_price_inr_per_kg": 33.67, "retail_price_inr_per_kg": 46.65, "price_index": 155.5, "_id": "6aa2b21479963966b44c4aac"}, {"record_id": "SP012", "date": "2026-02-03", "market": "Delhi", "commodity": "Potato", "farm_gate_price_inr_per_kg": 27.78, "wholesale_price_inr_per_kg": 31.88, "retail_price_inr_per_kg": 37.59, "price_index": 134.2, "_id": "6aa2b21479963966b44c4aad"}, {"record_id": "SP013", "date": "2026-02-06", "market": "Mumbai", "commodity": "Onion", "farm_gate_price_inr_per_kg": 28.14, "wholesale_price_inr_per_kg": 33.93, "retail_price_inr_per_kg": 43.77, "price_index": 136.8, "_id": "6aa2b21479963966b44c4aae"}, {"record_id": "SP014", "date": "2026-02-09", "market": "Pune", "commodity": "Carrot", "farm_gate_price_inr_per_kg": 38.75, "wholesale_price_inr_per_kg": 49.15, "retail_price_inr_per_kg": 71.03, "price_index": 177.6, "_id": "6aa2b21479963966b44c4aaf"}, {"record_id": "SP015", "date": "2026-02-12", "market": "Nashik", "commodity": "Spinach", "farm_gate_price_inr_per_kg": 19.49, "wholesale_price_inr_per_kg": 23.4, "retail_price_inr_per_kg": 29.29, "price_index": 117.2, "_id": "6aa2b21479963966b44c4ab0"}, {"record_id": "SP016", "date": "2026-02-15", "market": "Ahmedabad", "commodity": "Mango", "farm_gate_price_inr_per_kg": 70.6, "wholesale_price_inr_per_kg": 82.05, "retail_price_inr_per_kg": 99.04, "price_index": 141.5, "_id": "6aa2b21479963966b44c4ab1"}, {"record_id": "SP017", "date": "2026-02-18", "market": "Bengaluru", "commodity": "Banana", "farm_gate_price_inr_per_kg": 39.81, "wholesale_price_inr_per_kg": 47.99, "retail_price_inr_per_kg": 59.2, "price_index": 131.6, "_id": "6aa2b21479963966b44c4ab2"}, {"record_id": "SP018", "date": "2026-02-21", "market": "Delhi", "commodity": "Apple", "farm_gate_price_inr_per_kg": 98.99, "wholesale_price_inr_per_kg": 131.74, "retail_price_inr_per_kg": 169.01, "price_index": 140.8, "_id": "6aa2b21479963966b44c4ab3"}, {"record_id": "SP019", "date": "2026-02-24", "market": "Mumbai", "commodity": "Cabbage", "farm_gate_price_inr_per_kg": 30.25, "wholesale_price_inr_per_kg": 37.44, "retail_price_inr_per_kg": 43.62, "price_index": 145.4, "_id": "6aa2b21479963966b44c4ab4"}, {"record_id": "SP020", "date": "2026-02-27", "market": "Pune", "commodity": "Cauliflower", "farm_gate_price_inr_per_kg": 36.74, "wholesale_price_inr_per_kg": 48.09, "retail_price_inr_per_kg": 69.28, "price_index": 197.9, "_id": "6aa2b21479963966b44c4ab5"}, {"record_id": "SP021", "date": "2026-03-02", "market": "Nashik", "commodity": "Tomato", "farm_gate_price_inr_per_kg": 30.84, "wholesale_price_inr_per_kg": 40.47, "retail_price_inr_per_kg": 48.56, "price_index": 161.9, "_id": "6aa2b21479963966b44c4ab6"}, {"record_id": "SP022", "date": "2026-03-05", "market": "Ahmedabad", "commodity": "Potato", "farm_gate_price_inr_per_kg": 25.08, "wholesale_price_inr_per_kg": 28.93, "retail_price_inr_per_kg": 36.75, "price_index": 131.2, "_id": "6aa2b21479963966b44c4ab7"}, {"record_id": "SP023", "date": "2026-03-08", "market": "Bengaluru", "commodity": "Onion", "farm_gate_price_inr_per_kg": 24.56, "wholesale_price_inr_per_kg": 29.34, "retail_price_inr_per_kg": 42.41, "price_index": 132.5, "_id": "6aa2b21479963966b44c4ab8"}, {"record_id": "SP024", "date": "2026-03-11", "market": "Delhi", "commodity": "Carrot", "farm_gate_price_inr_per_kg": 33.18, "wholesale_price_inr_per_kg": 43.0, "retail_price_inr_per_kg": 55.32, "price_index": 138.3, "_id": "6aa2b21479963966b44c4ab9"}, {"record_id": "SP025", "date": "2026-03-14", "market": "Mumbai", "commodity": "Spinach", "farm_gate_price_inr_per_kg": 21.92, "wholesale_price_inr_per_kg": 29.36, "retail_price_inr_per_kg": 42.53, "price_index": 170.1, "_id": "6aa2b21479963966b44c4aba"}, {"record_id": "SP026", "date": "2026-03-17", "market": "Pune", "commodity": "Mango", "farm_gate_price_inr_per_kg": 64.17, "wholesale_price_inr_per_kg": 82.11, "retail_price_inr_per_kg": 98.24, "price_index": 140.3, "_id": "6aa2b21479963966b44c4abb"}, {"record_id": "SP027", "date": "2026-03-20", "market": "Nashik", "commodity": "Banana", "farm_gate_price_inr_per_kg": 37.76, "wholesale_price_inr_per_kg": 50.68, "retail_price_inr_per_kg": 67.09, "price_index": 149.1, "_id": "6aa2b21479963966b44c4abc"}, {"record_id": "SP028", "date": "2026-03-23", "market": "Ahmedabad", "commodity": "Apple", "farm_gate_price_inr_per_kg": 109.52, "wholesale_price_inr_per_kg": 140.95, "retail_price_inr_per_kg": 164.51, "price_index": 137.1, "_id": "6aa2b21479963966b44c4abd"}, {"record_id": "SP029", "date": "2026-03-26", "market": "Bengaluru", "commodity": "Cabbage", "farm_gate_price_inr_per_kg": 27.76, "wholesale_price_inr_per_kg": 34.03, "retail_price_inr_per_kg": 47.84, "price_index": 159.5, "_id": "6aa2b21479963966b44c4abe"}, {"record_id": "SP030", "date": "2026-03-29", "market": "Delhi", "commodity": "Cauliflower", "farm_gate_price_inr_per_kg": 27.9, "wholesale_price_inr_per_kg": 37.39, "retail_price_inr_per_kg": 43.9, "price_index": 125.4, "_id": "6aa2b21479963966b44c4abf"}], "pantry_inventory": [{"record_id": "PI001", "ingredient": "Rice", "quantity": 1.49, "unit": "kg", "storage_condition": "Dry", "expected_shelf_life_days": 125, "remaining_shelf_life_days": 9, "_id": "6aa2b21479963966b44c4ac0"}, {"record_id": "PI002", "ingredient": "Wheat Flour", "quantity": 6.35, "unit": "kg", "storage_condition": "Dry", "expected_shelf_life_days": 150, "remaining_shelf_life_days": 146, "_id": "6aa2b21479963966b44c4ac1"}, {"record_id": "PI003", "ingredient": "Lentils", "quantity": 8.89, "unit": "kg", "storage_condition": "Dry", "expected_shelf_life_days": 156, "remaining_shelf_life_days": 11, "_id": "6aa2b21479963966b44c4ac2"}, {"record_id": "PI004", "ingredient": "Potato", "quantity": 1.69, "unit": "kg", "storage_condition": "Cool/Dry", "expected_shelf_life_days": 347, "remaining_shelf_life_days": 337, "_id": "6aa2b21479963966b44c4ac3"}, {"record_id": "PI005", "ingredient": "Onion", "quantity": 8.7, "unit": "kg", "storage_condition": "Cool/Dry", "expected_shelf_life_days": 328, "remaining_shelf_life_days": 162, "_id": "6aa2b21479963966b44c4ac4"}, {"record_id": "PI006", "ingredient": "Tomato", "quantity": 3.46, "unit": "kg", "storage_condition": "Refrigerated", "expected_shelf_life_days": 11, "remaining_shelf_life_days": 6, "_id": "6aa2b21479963966b44c4ac5"}, {"record_id": "PI007", "ingredient": "Milk", "quantity": 4.35, "unit": "litre", "storage_condition": "Refrigerated", "expected_shelf_life_days": 4, "remaining_shelf_life_days": 2, "_id": "6aa2b21479963966b44c4ac6"}, {"record_id": "PI008", "ingredient": "Paneer", "quantity": 9.86, "unit": "kg", "storage_condition": "Refrigerated", "expected_shelf_life_days": 8, "remaining_shelf_life_days": 8, "_id": "6aa2b21479963966b44c4ac7"}, {"record_id": "PI009", "ingredient": "Bread", "quantity": 13.97, "unit": "kg", "storage_condition": "Room Temperature", "expected_shelf_life_days": 12, "remaining_shelf_life_days": 2, "_id": "6aa2b21479963966b44c4ac8"}, {"record_id": "PI010", "ingredient": "Eggs", "quantity": 7.15, "unit": "kg", "storage_condition": "Refrigerated", "expected_shelf_life_days": 7, "remaining_shelf_life_days": 5, "_id": "6aa2b21479963966b44c4ac9"}, {"record_id": "PI011", "ingredient": "Carrot", "quantity": 1.56, "unit": "kg", "storage_condition": "Refrigerated", "expected_shelf_life_days": 8, "remaining_shelf_life_days": 4, "_id": "6aa2b21479963966b44c4aca"}, {"record_id": "PI012", "ingredient": "Spinach", "quantity": 4.35, "unit": "kg", "storage_condition": "Refrigerated", "expected_shelf_life_days": 7, "remaining_shelf_life_days": 3, "_id": "6aa2b21479963966b44c4acb"}, {"record_id": "PI013", "ingredient": "Cooking Oil", "quantity": 13.25, "unit": "litre", "storage_condition": "Dry", "expected_shelf_life_days": 65, "remaining_shelf_life_days": 48, "_id": "6aa2b21479963966b44c4acc"}, {"record_id": "PI014", "ingredient": "Sugar", "quantity": 2.79, "unit": "kg", "storage_condition": "Dry", "expected_shelf_life_days": 175, "remaining_shelf_life_days": 140, "_id": "6aa2b21479963966b44c4acd"}, {"record_id": "PI015", "ingredient": "Chickpeas", "quantity": 9.37, "unit": "kg", "storage_condition": "Dry", "expected_shelf_life_days": 184, "remaining_shelf_life_days": 168, "_id": "6aa2b21479963966b44c4ace"}, {"record_id": "PI016", "ingredient": "Rice", "quantity": 0.61, "unit": "kg", "storage_condition": "Dry", "expected_shelf_life_days": 300, "remaining_shelf_life_days": 284, "_id": "6aa2b21479963966b44c4acf"}, {"record_id": "PI017", "ingredient": "Wheat Flour", "quantity": 14.01, "unit": "kg", "storage_condition": "Dry", "expected_shelf_life_days": 183, "remaining_shelf_life_days": 27, "_id": "6aa2b21479963966b44c4ad0"}, {"record_id": "PI018", "ingredient": "Lentils", "quantity": 4.33, "unit": "kg", "storage_condition": "Dry", "expected_shelf_life_days": 98, "remaining_shelf_life_days": 14, "_id": "6aa2b21479963966b44c4ad1"}, {"record_id": "PI019", "ingredient": "Potato", "quantity": 2.75, "unit": "kg", "storage_condition": "Cool/Dry", "expected_shelf_life_days": 313, "remaining_shelf_life_days": 145, "_id": "6aa2b21479963966b44c4ad2"}, {"record_id": "PI020", "ingredient": "Onion", "quantity": 3.55, "unit": "kg", "storage_condition": "Cool/Dry", "expected_shelf_life_days": 339, "remaining_shelf_life_days": 176, "_id": "6aa2b21479963966b44c4ad3"}, {"record_id": "PI021", "ingredient": "Tomato", "quantity": 10.47, "unit": "kg", "storage_condition": "Refrigerated", "expected_shelf_life_days": 10, "remaining_shelf_life_days": 5, "_id": "6aa2b21479963966b44c4ad4"}, {"record_id": "PI022", "ingredient": "Milk", "quantity": 7.58, "unit": "litre", "storage_condition": "Refrigerated", "expected_shelf_life_days": 7, "remaining_shelf_life_days": 7, "_id": "6aa2b21479963966b44c4ad5"}, {"record_id": "PI023", "ingredient": "Paneer", "quantity": 1.84, "unit": "kg", "storage_condition": "Refrigerated", "expected_shelf_life_days": 3, "remaining_shelf_life_days": 2, "_id": "6aa2b21479963966b44c4ad6"}, {"record_id": "PI024", "ingredient": "Bread", "quantity": 4.51, "unit": "kg", "storage_condition": "Room Temperature", "expected_shelf_life_days": 20, "remaining_shelf_life_days": 1, "_id": "6aa2b21479963966b44c4ad7"}, {"record_id": "PI025", "ingredient": "Eggs", "quantity": 11.68, "unit": "kg", "storage_condition": "Refrigerated", "expected_shelf_life_days": 12, "remaining_shelf_life_days": 11, "_id": "6aa2b21479963966b44c4ad8"}, {"record_id": "PI026", "ingredient": "Carrot", "quantity": 2.84, "unit": "kg", "storage_condition": "Refrigerated", "expected_shelf_life_days": 11, "remaining_shelf_life_days": 8, "_id": "6aa2b21479963966b44c4ad9"}, {"record_id": "PI027", "ingredient": "Spinach", "quantity": 10.73, "unit": "kg", "storage_condition": "Refrigerated", "expected_shelf_life_days": 7, "remaining_shelf_life_days": 5, "_id": "6aa2b21479963966b44c4ada"}, {"record_id": "PI028", "ingredient": "Cooking Oil", "quantity": 2.12, "unit": "litre", "storage_condition": "Dry", "expected_shelf_life_days": 34, "remaining_shelf_life_days": 10, "_id": "6aa2b21479963966b44c4adb"}, {"record_id": "PI029", "ingredient": "Sugar", "quantity": 1.02, "unit": "kg", "storage_condition": "Dry", "expected_shelf_life_days": 309, "remaining_shelf_life_days": 190, "_id": "6aa2b21479963966b44c4adc"}, {"record_id": "PI030", "ingredient": "Chickpeas", "quantity": 8.51, "unit": "kg", "storage_condition": "Dry", "expected_shelf_life_days": 328, "remaining_shelf_life_days": 221, "_id": "6aa2b21479963966b44c4add"}], "transit_logs": [{"log_id": "TD001", "dispatch_date": "2026-01-01", "route": "Nashik-Mumbai", "produce": "Tomato", "transit_duration_hours": 12, "avg_temperature_c": 18.8, "avg_humidity_pct": 73, "vibration_index": 4.1, "estimated_damage_pct": 8.55, "freshness_score": 87.17, "_id": "6aa2b21479963966b44c4ade"}, {"log_id": "TD002", "dispatch_date": "2026-01-03", "route": "Pune-Mumbai", "produce": "Potato", "transit_duration_hours": 6, "avg_temperature_c": 36.0, "avg_humidity_pct": 63, "vibration_index": 3.23, "estimated_damage_pct": 12.18, "freshness_score": 81.73, "_id": "6aa2b21479963966b44c4adf"}, {"log_id": "TD003", "dispatch_date": "2026-01-05", "route": "Ahmedabad-Mumbai", "produce": "Onion", "transit_duration_hours": 26, "avg_temperature_c": 33.6, "avg_humidity_pct": 76, "vibration_index": 4.4, "estimated_damage_pct": 14.31, "freshness_score": 78.53, "_id": "6aa2b21479963966b44c4ae0"}, {"log_id": "TD004", "dispatch_date": "2026-01-07", "route": "Bengaluru-Mumbai", "produce": "Carrot", "transit_duration_hours": 19, "avg_temperature_c": 35.3, "avg_humidity_pct": 61, "vibration_index": 4.03, "estimated_damage_pct": 10.97, "freshness_score": 83.55, "_id": "6aa2b21479963966b44c4ae1"}, {"log_id": "TD005", "dispatch_date": "2026-01-09", "route": "Delhi-Mumbai", "produce": "Spinach", "transit_duration_hours": 25, "avg_temperature_c": 33.6, "avg_humidity_pct": 76, "vibration_index": 3.71, "estimated_damage_pct": 13.82, "freshness_score": 79.27, "_id": "6aa2b21479963966b44c4ae2"}, {"log_id": "TD006", "dispatch_date": "2026-01-11", "route": "Nagpur-Pune", "produce": "Mango", "transit_duration_hours": 19, "avg_temperature_c": 23.3, "avg_humidity_pct": 56, "vibration_index": 2.03, "estimated_damage_pct": 4.41, "freshness_score": 93.39, "_id": "6aa2b21479963966b44c4ae3"}, {"log_id": "TD007", "dispatch_date": "2026-01-13", "route": "Nashik-Mumbai", "produce": "Banana", "transit_duration_hours": 34, "avg_temperature_c": 22.4, "avg_humidity_pct": 79, "vibration_index": 1.9, "estimated_damage_pct": 7.96, "freshness_score": 88.06, "_id": "6aa2b21479963966b44c4ae4"}, {"log_id": "TD008", "dispatch_date": "2026-01-15", "route": "Pune-Mumbai", "produce": "Apple", "transit_duration_hours": 18, "avg_temperature_c": 22.5, "avg_humidity_pct": 62, "vibration_index": 2.09, "estimated_damage_pct": 4.92, "freshness_score": 92.62, "_id": "6aa2b21479963966b44c4ae5"}, {"log_id": "TD009", "dispatch_date": "2026-01-17", "route": "Ahmedabad-Mumbai", "produce": "Cabbage", "transit_duration_hours": 8, "avg_temperature_c": 37.3, "avg_humidity_pct": 67, "vibration_index": 1.9, "estimated_damage_pct": 10.8, "freshness_score": 83.8, "_id": "6aa2b21479963966b44c4ae6"}, {"log_id": "TD010", "dispatch_date": "2026-01-19", "route": "Bengaluru-Mumbai", "produce": "Cauliflower", "transit_duration_hours": 47, "avg_temperature_c": 37.6, "avg_humidity_pct": 84, "vibration_index": 1.82, "estimated_damage_pct": 11.41, "freshness_score": 82.88, "_id": "6aa2b21479963966b44c4ae7"}, {"log_id": "TD011", "dispatch_date": "2026-01-21", "route": "Delhi-Mumbai", "produce": "Tomato", "transit_duration_hours": 20, "avg_temperature_c": 21.6, "avg_humidity_pct": 66, "vibration_index": 0.65, "estimated_damage_pct": 3.95, "freshness_score": 94.08, "_id": "6aa2b21479963966b44c4ae8"}, {"log_id": "TD012", "dispatch_date": "2026-01-23", "route": "Nagpur-Pune", "produce": "Potato", "transit_duration_hours": 26, "avg_temperature_c": 32.6, "avg_humidity_pct": 70, "vibration_index": 2.25, "estimated_damage_pct": 11.36, "freshness_score": 82.96, "_id": "6aa2b21479963966b44c4ae9"}, {"log_id": "TD013", "dispatch_date": "2026-01-25", "route": "Nashik-Mumbai", "produce": "Onion", "transit_duration_hours": 11, "avg_temperature_c": 25.7, "avg_humidity_pct": 86, "vibration_index": 1.26, "estimated_damage_pct": 6.86, "freshness_score": 89.71, "_id": "6aa2b21479963966b44c4aea"}, {"log_id": "TD014", "dispatch_date": "2026-01-27", "route": "Pune-Mumbai", "produce": "Carrot", "transit_duration_hours": 31, "avg_temperature_c": 18.0, "avg_humidity_pct": 84, "vibration_index": 3.25, "estimated_damage_pct": 9.0, "freshness_score": 86.5, "_id": "6aa2b21479963966b44c4aeb"}, {"log_id": "TD015", "dispatch_date": "2026-01-29", "route": "Ahmedabad-Mumbai", "produce": "Spinach", "transit_duration_hours": 46, "avg_temperature_c": 21.9, "avg_humidity_pct": 77, "vibration_index": 0.78, "estimated_damage_pct": 5.73, "freshness_score": 91.41, "_id": "6aa2b21479963966b44c4aec"}, {"log_id": "TD016", "dispatch_date": "2026-01-31", "route": "Bengaluru-Mumbai", "produce": "Mango", "transit_duration_hours": 25, "avg_temperature_c": 30.5, "avg_humidity_pct": 57, "vibration_index": 3.38, "estimated_damage_pct": 9.33, "freshness_score": 86.0, "_id": "6aa2b21479963966b44c4aed"}, {"log_id": "TD017", "dispatch_date": "2026-02-02", "route": "Delhi-Mumbai", "produce": "Banana", "transit_duration_hours": 23, "avg_temperature_c": 31.3, "avg_humidity_pct": 70, "vibration_index": 2.11, "estimated_damage_pct": 8.67, "freshness_score": 87.0, "_id": "6aa2b21479963966b44c4aee"}, {"log_id": "TD018", "dispatch_date": "2026-02-04", "route": "Nagpur-Pune", "produce": "Apple", "transit_duration_hours": 12, "avg_temperature_c": 21.8, "avg_humidity_pct": 74, "vibration_index": 3.21, "estimated_damage_pct": 8.97, "freshness_score": 86.55, "_id": "6aa2b21479963966b44c4aef"}, {"log_id": "TD019", "dispatch_date": "2026-02-06", "route": "Nashik-Mumbai", "produce": "Cabbage", "transit_duration_hours": 43, "avg_temperature_c": 29.4, "avg_humidity_pct": 75, "vibration_index": 2.69, "estimated_damage_pct": 8.42, "freshness_score": 87.37, "_id": "6aa2b21479963966b44c4af0"}, {"log_id": "TD020", "dispatch_date": "2026-02-08", "route": "Pune-Mumbai", "produce": "Cauliflower", "transit_duration_hours": 22, "avg_temperature_c": 22.2, "avg_humidity_pct": 87, "vibration_index": 2.93, "estimated_damage_pct": 8.59, "freshness_score": 87.11, "_id": "6aa2b21479963966b44c4af1"}, {"log_id": "TD021", "dispatch_date": "2026-02-10", "route": "Ahmedabad-Mumbai", "produce": "Tomato", "transit_duration_hours": 32, "avg_temperature_c": 26.8, "avg_humidity_pct": 63, "vibration_index": 2.54, "estimated_damage_pct": 8.51, "freshness_score": 87.23, "_id": "6aa2b21479963966b44c4af2"}, {"log_id": "TD022", "dispatch_date": "2026-02-12", "route": "Bengaluru-Mumbai", "produce": "Potato", "transit_duration_hours": 14, "avg_temperature_c": 31.2, "avg_humidity_pct": 68, "vibration_index": 2.56, "estimated_damage_pct": 9.95, "freshness_score": 85.08, "_id": "6aa2b21479963966b44c4af3"}, {"log_id": "TD023", "dispatch_date": "2026-02-14", "route": "Delhi-Mumbai", "produce": "Onion", "transit_duration_hours": 25, "avg_temperature_c": 19.9, "avg_humidity_pct": 65, "vibration_index": 3.19, "estimated_damage_pct": 5.17, "freshness_score": 92.25, "_id": "6aa2b21479963966b44c4af4"}, {"log_id": "TD024", "dispatch_date": "2026-02-16", "route": "Nagpur-Pune", "produce": "Carrot", "transit_duration_hours": 16, "avg_temperature_c": 20.9, "avg_humidity_pct": 52, "vibration_index": 1.48, "estimated_damage_pct": 4.22, "freshness_score": 93.67, "_id": "6aa2b21479963966b44c4af5"}, {"log_id": "TD025", "dispatch_date": "2026-02-18", "route": "Nashik-Mumbai", "produce": "Spinach", "transit_duration_hours": 8, "avg_temperature_c": 27.1, "avg_humidity_pct": 90, "vibration_index": 2.8, "estimated_damage_pct": 11.7, "freshness_score": 82.45, "_id": "6aa2b21479963966b44c4af6"}, {"log_id": "TD026", "dispatch_date": "2026-02-20", "route": "Pune-Mumbai", "produce": "Mango", "transit_duration_hours": 28, "avg_temperature_c": 27.9, "avg_humidity_pct": 65, "vibration_index": 1.09, "estimated_damage_pct": 6.84, "freshness_score": 89.74, "_id": "6aa2b21479963966b44c4af7"}, {"log_id": "TD027", "dispatch_date": "2026-02-22", "route": "Ahmedabad-Mumbai", "produce": "Banana", "transit_duration_hours": 10, "avg_temperature_c": 33.6, "avg_humidity_pct": 64, "vibration_index": 1.2, "estimated_damage_pct": 9.77, "freshness_score": 85.34, "_id": "6aa2b21479963966b44c4af8"}, {"log_id": "TD028", "dispatch_date": "2026-02-24", "route": "Bengaluru-Mumbai", "produce": "Apple", "transit_duration_hours": 37, "avg_temperature_c": 27.3, "avg_humidity_pct": 85, "vibration_index": 1.5, "estimated_damage_pct": 10.0, "freshness_score": 85.0, "_id": "6aa2b21479963966b44c4af9"}, {"log_id": "TD029", "dispatch_date": "2026-02-26", "route": "Delhi-Mumbai", "produce": "Cabbage", "transit_duration_hours": 33, "avg_temperature_c": 20.7, "avg_humidity_pct": 79, "vibration_index": 3.17, "estimated_damage_pct": 9.39, "freshness_score": 85.91, "_id": "6aa2b21479963966b44c4afa"}, {"log_id": "TD030", "dispatch_date": "2026-02-28", "route": "Nagpur-Pune", "produce": "Cauliflower", "transit_duration_hours": 42, "avg_temperature_c": 24.3, "avg_humidity_pct": 78, "vibration_index": 2.95, "estimated_damage_pct": 9.46, "freshness_score": 85.81, "_id": "6aa2b21479963966b44c4afb"}]};
+
+    let currentTab = 'price_index';
+    let sortColumn = null;
+    let sortAsc = true;
+    let searchTerm = '';
+
+    const SCHEMAS = {
+      price_index: [
+        { key: 'record_id', label: 'Record ID', type: 'str' },
+        { key: 'date', label: 'Date (ISODate)', type: 'date' },
+        { key: 'market', label: 'Market', type: 'market' },
+        { key: 'commodity', label: 'Commodity', type: 'commodity' },
+        { key: 'farm_gate_price_inr_per_kg', label: 'Farm Gate (₹)', type: 'currency' },
+        { key: 'wholesale_price_inr_per_kg', label: 'Wholesale (₹)', type: 'currency' },
+        { key: 'retail_price_inr_per_kg', label: 'Retail (₹)', type: 'currency' },
+        { key: 'price_index', label: 'Price Index', type: 'num' },
+        { key: '_inspect', label: 'BSON Doc', type: 'action' }
+      ],
+      pantry_inventory: [
+        { key: 'record_id', label: 'Record ID', type: 'str' },
+        { key: 'ingredient', label: 'Ingredient', type: 'commodity' },
+        { key: 'quantity', label: 'Qty', type: 'num' },
+        { key: 'unit', label: 'Unit', type: 'str' },
+        { key: 'storage_condition', label: 'Storage', type: 'str' },
+        { key: 'expected_shelf_life_days', label: 'Expected Days', type: 'int' },
+        { key: 'remaining_shelf_life_days', label: 'Remaining Days', type: 'shelf_status' },
+        { key: '_inspect', label: 'BSON Doc', type: 'action' }
+      ],
+      transit_logs: [
+        { key: 'log_id', label: 'Log ID', type: 'str' },
+        { key: 'dispatch_date', label: 'Dispatch Date', type: 'date' },
+        { key: 'route', label: 'Route', type: 'route' },
+        { key: 'produce', label: 'Produce', type: 'commodity' },
+        { key: 'transit_duration_hours', label: 'Duration (hrs)', type: 'int' },
+        { key: 'avg_temperature_c', label: 'Avg Temp (°C)', type: 'num' },
+        { key: 'avg_humidity_pct', label: 'Humidity (%)', type: 'int' },
+        { key: 'vibration_index', label: 'Vibration', type: 'num' },
+        { key: 'estimated_damage_pct', label: 'Damage (%)', type: 'damage' },
+        { key: 'freshness_score', label: 'Freshness Score', type: 'freshness' },
+        { key: '_inspect', label: 'BSON Doc', type: 'action' }
+      ]
+    };
+
+    function renderKpis() {
+      const container = document.getElementById('kpiCards');
+      if (currentTab === 'code_view') {
+        container.style.display = 'none';
+        return;
+      }
+      container.style.display = 'grid';
+
+      const items = DB_DATA[currentTab] || [];
+
+      if (currentTab === 'price_index') {
+        const avgIndex = (items.reduce((s, d) => s + d.price_index, 0) / items.length).toFixed(1);
+        const avgRetail = (items.reduce((s, d) => s + d.retail_price_inr_per_kg, 0) / items.length).toFixed(2);
+        const maxRetail = Math.max(...items.map(d => d.retail_price_inr_per_kg));
+        const commodities = new Set(items.map(d => d.commodity)).size;
+
+        container.innerHTML = `
+          <div class="kpi-card" style="--card-accent: #10b981;">
+            <div class="kpi-label">Avg Price Index</div>
+            <div class="kpi-value">${avgIndex}</div>
+            <div class="kpi-meta">Base benchmark: 100.0</div>
+          </div>
+          <div class="kpi-card" style="--card-accent: #06b6d4;">
+            <div class="kpi-label">Avg Retail Price</div>
+            <div class="kpi-value">₹${avgRetail}</div>
+            <div class="kpi-meta">Across all 30 records</div>
+          </div>
+          <div class="kpi-card" style="--card-accent: #f59e0b;">
+            <div class="kpi-label">Highest Retail Item</div>
+            <div class="kpi-value">₹${maxRetail}</div>
+            <div class="kpi-meta">Peak commodity price</div>
+          </div>
+          <div class="kpi-card" style="--card-accent: #6366f1;">
+            <div class="kpi-label">Tracked Commodities</div>
+            <div class="kpi-value">${commodities}</div>
+            <div class="kpi-meta">From regional mandi markets</div>
+          </div>
+        `;
+      } else if (currentTab === 'pantry_inventory') {
+        const totalItems = items.length;
+        const lowShelf = items.filter(d => d.remaining_shelf_life_days <= 3).length;
+        const totalQty = items.reduce((s, d) => s + d.quantity, 0).toFixed(1);
+        const coldItems = items.filter(d => d.storage_condition.includes('Refrigerated')).length;
+
+        container.innerHTML = `
+          <div class="kpi-card" style="--card-accent: #10b981;">
+            <div class="kpi-label">Pantry Batches</div>
+            <div class="kpi-value">${totalItems}</div>
+            <div class="kpi-meta">Stocked in pantry_inventory</div>
+          </div>
+          <div class="kpi-card" style="--card-accent: #f43f5e;">
+            <div class="kpi-label">Expiring Soon (≤ 3 Days)</div>
+            <div class="kpi-value" style="color: #fb7185;">${lowShelf} Items</div>
+            <div class="kpi-meta">Requires urgent consumption</div>
+          </div>
+          <div class="kpi-card" style="--card-accent: #06b6d4;">
+            <div class="kpi-label">Total Stock Quantity</div>
+            <div class="kpi-value">${totalQty}</div>
+            <div class="kpi-meta">kg &amp; litres stored</div>
+          </div>
+          <div class="kpi-card" style="--card-accent: #6366f1;">
+            <div class="kpi-label">Refrigerated Batches</div>
+            <div class="kpi-value">${coldItems}</div>
+            <div class="kpi-meta">Cold chain storage required</div>
+          </div>
+        `;
+      } else if (currentTab === 'transit_logs') {
+        const avgFreshness = (items.reduce((s, d) => s + d.freshness_score, 0) / items.length).toFixed(2);
+        const avgDuration = (items.reduce((s, d) => s + d.transit_duration_hours, 0) / items.length).toFixed(1);
+        const avgDamage = (items.reduce((s, d) => s + d.estimated_damage_pct, 0) / items.length).toFixed(2);
+        const avgTemp = (items.reduce((s, d) => s + d.avg_temperature_c, 0) / items.length).toFixed(1);
+
+        container.innerHTML = `
+          <div class="kpi-card" style="--card-accent: #10b981;">
+            <div class="kpi-label">Avg Freshness Score</div>
+            <div class="kpi-value">${avgFreshness}/100</div>
+            <div class="kpi-meta">Post-transit quality index</div>
+          </div>
+          <div class="kpi-card" style="--card-accent: #06b6d4;">
+            <div class="kpi-label">Avg Transit Duration</div>
+            <div class="kpi-value">${avgDuration} hrs</div>
+            <div class="kpi-meta">Logistics transit time</div>
+          </div>
+          <div class="kpi-card" style="--card-accent: #f43f5e;">
+            <div class="kpi-label">Avg Estimated Damage</div>
+            <div class="kpi-value">${avgDamage}%</div>
+            <div class="kpi-meta">Degradation during transit</div>
+          </div>
+          <div class="kpi-card" style="--card-accent: #f59e0b;">
+            <div class="kpi-label">Avg Transit Temp</div>
+            <div class="kpi-value">${avgTemp}°C</div>
+            <div class="kpi-meta">Thermal storage monitoring</div>
+          </div>
+        `;
+      }
+    }
+
+    function renderTable() {
+      const tableContainer = document.getElementById('tableContainer');
+      const codeContainer = document.getElementById('codeContainer');
+      const searchContainer = document.getElementById('searchContainer');
+
+      if (currentTab === 'code_view') {
+        tableContainer.style.display = 'none';
+        codeContainer.style.display = 'block';
+        searchContainer.style.display = 'none';
+        return;
+      }
+
+      tableContainer.style.display = 'block';
+      codeContainer.style.display = 'none';
+      searchContainer.style.display = 'flex';
+
+      const schema = SCHEMAS[currentTab];
+      let rows = [...(DB_DATA[currentTab] || [])];
+
+      if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        rows = rows.filter(r => Object.values(r).some(val => String(val).toLowerCase().includes(term)));
+      }
+
+      if (sortColumn) {
+        rows.sort((a, b) => {
+          let va = a[sortColumn];
+          let vb = b[sortColumn];
+          if (va < vb) return sortAsc ? -1 : 1;
+          if (va > vb) return sortAsc ? 1 : -1;
+          return 0;
+        });
+      }
+
+      const thead = document.getElementById('tableHead');
+      thead.innerHTML = `<tr>${schema.map(col => `
+        <th onclick="handleSort('${col.key}')">
+          ${col.label} ${sortColumn === col.key ? (sortAsc ? '▲' : '▼') : ''}
+        </th>
+      `).join('')}</tr>`;
+
+      const tbody = document.getElementById('tableBody');
+      if (rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="${schema.length}" style="text-align:center; padding: 32px; color: var(--text-dim);">No matching documents in '${currentTab}'</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map((row, idx) => `
+        <tr>
+          ${schema.map(col => {
+            if (col.type === 'action') {
+              return `<td><button class="action-btn-inspect" onclick="inspectDoc('${currentTab}', ${idx})">{ } View BSON</button></td>`;
+            }
+            const val = row[col.key];
+            if (col.type === 'commodity') {
+              return `<td><span class="badge badge-commodity">${val}</span></td>`;
+            }
+            if (col.type === 'market') {
+              return `<td><span class="badge badge-market">${val}</span></td>`;
+            }
+            if (col.type === 'route') {
+              return `<td><span class="badge badge-route">${val}</span></td>`;
+            }
+            if (col.type === 'currency') {
+              return `<td class="font-mono">₹${Number(val).toFixed(2)}</td>`;
+            }
+            if (col.type === 'shelf_status') {
+              const badgeClass = val <= 3 ? 'badge-fresh-crit' : (val <= 14 ? 'badge-fresh-med' : 'badge-fresh-good');
+              return `<td><span class="badge ${badgeClass}">${val} days</span></td>`;
+            }
+            if (col.type === 'freshness') {
+              const badgeClass = val >= 90 ? 'badge-fresh-good' : (val >= 80 ? 'badge-fresh-med' : 'badge-fresh-crit');
+              return `<td><span class="badge ${badgeClass}">${val} / 100</span></td>`;
+            }
+            if (col.type === 'damage') {
+              return `<td class="font-mono" style="color: #fb7185;">${val}%</td>`;
+            }
+            if (col.type === 'date') {
+              return `<td class="font-mono" style="color: #38bdf8;">ISODate("${val}")</td>`;
+            }
+            if (col.key === 'record_id' || col.key === 'log_id') {
+              return `<td class="font-mono" style="font-weight:600; color:#f8fafc;">${val}</td>`;
+            }
+            return `<td>${val}</td>`;
+          }).join('')}
+        </tr>
+      `).join('');
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      sortColumn = null;
+      sortAsc = true;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+      if (tab === 'price_index') document.getElementById('tabPriceIndex').classList.add('active');
+      if (tab === 'pantry_inventory') document.getElementById('tabPantry').classList.add('active');
+      if (tab === 'transit_logs') document.getElementById('tabTransit').classList.add('active');
+      if (tab === 'code_view') document.getElementById('tabCode').classList.add('active');
+
+      renderKpis();
+      renderTable();
+    }
+
+    function handleSort(key) {
+      if (key === '_inspect') return;
+      if (sortColumn === key) {
+        sortAsc = !sortAsc;
+      } else {
+        sortColumn = key;
+        sortAsc = true;
+      }
+      renderTable();
+    }
+
+    function handleSearch() {
+      searchTerm = document.getElementById('searchInput').value;
+      renderTable();
+    }
+
+    function inspectDoc(coll, index) {
+      const doc = DB_DATA[coll][index];
+      document.getElementById('modalTitle').innerText = `Document in '${coll}' (_id: ${doc._id})`;
+      
+      const formatted = {
+        "_id": `ObjectId("${doc._id}")`,
+        ...doc
+      };
+      document.getElementById('modalJson').textContent = JSON.stringify(formatted, null, 2);
+      document.getElementById('docModal').style.display = 'flex';
+    }
+
+    function hideModal() {
+      document.getElementById('docModal').style.display = 'none';
+    }
+
+    function closeModal(e) {
+      if (e.target.id === 'docModal') hideModal();
+    }
+
+    renderKpis();
+    renderTable();
+  </script>
+</body>
+</html>

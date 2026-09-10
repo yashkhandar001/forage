@@ -1,3 +1,34 @@
+
+const API_BASE = 'http://localhost:3000/api';
+
+async function syncCustomerDataWithBackend() {
+    try {
+        const res = await fetch(`${API_BASE}/pantry`);
+        if (res.ok) {
+            const pantryData = await res.json();
+            if (pantryData && pantryData.length > 0) {
+                pantryInventory = pantryData.map((item, idx) => ({
+                    id: item.record_id || item.id || ('PANTRY-' + (idx + 1).toString().padStart(3, '0')),
+                    ingredient: item.ingredient || item.name,
+                    category: item.storage_condition || item.category || 'Produce',
+                    quantity: Number(item.quantity || 1),
+                    unit: item.unit || 'kg',
+                    storageCondition: item.storage_condition || item.storageCondition || 'Cool/Dry',
+                    expectedShelfLifeDays: Number(item.expected_shelf_life_days || item.expectedShelfLifeDays || 10),
+                    remainingDays: Number(item.remaining_shelf_life_days !== undefined ? item.remaining_shelf_life_days : (item.remainingDays || 5)),
+                    farmOrigin: item.farmOrigin || 'Nashik Organic Direct Harvest',
+                    bannerClass: (item.ingredient || '').toLowerCase().includes('tomato') ? 'tomato' : 
+                                 ((item.ingredient || '').toLowerCase().includes('onion') ? 'onion' : 'spinach')
+                }));
+                if (typeof renderAllViews === 'function') renderAllViews();
+                console.log('✅ Customer Pantry synced with MongoDB / Express API');
+            }
+        }
+    } catch (e) {
+        console.log('ℹ️ Customer Hub in standalone mode');
+    }
+}
+
 /**
  * FORAGE CONSUMER KITCHEN & SMART PANTRY
  * Frontend Architecture & Mock Data Store
@@ -370,6 +401,7 @@ let currentMarketCategory = 'all';
 let activeGeneratedRecipe = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    syncCustomerDataWithBackend();
     initNavigationTabs();
     initMobileSidebar();
     initStorageFilters();

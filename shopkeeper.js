@@ -1,3 +1,44 @@
+
+const API_BASE = 'http://localhost:3000/api';
+
+async function syncShopkeeperDataWithBackend() {
+    try {
+        const [listingsRes, pricesRes] = await Promise.all([
+            fetch(`${API_BASE}/listings`),
+            fetch(`${API_BASE}/prices`)
+        ]);
+        if (listingsRes.ok) {
+            const liveListings = await listingsRes.json();
+            if (liveListings && liveListings.length > 0) {
+                const mappedListings = liveListings.map((l, idx) => ({
+                    id: l.id || ('CROP-00' + (idx + 1)),
+                    crop: l.name || l.crop || 'Produce',
+                    category: l.category || 'Vegetables',
+                    variety: l.variety || 'Grade-A',
+                    farmerName: l.farmerName || 'Direct Farm Harvest',
+                    farmerId: l.farmerId || 'FARM-901',
+                    location: l.location || 'Nashik',
+                    state: l.state || 'Maharashtra',
+                    availableQtyKg: Number(l.quantity || l.availableQtyKg || 500),
+                    minOrderQtyKg: 50,
+                    farmGatePrice: Number(l.pricePerUnit || l.farmGatePrice || 25),
+                    wholesalePrice: Number(l.wholesalePrice || (Number(l.pricePerUnit || 25) * 1.2).toFixed(2)),
+                    retailPrice: Number(l.retailPrice || (Number(l.pricePerUnit || 25) * 1.6).toFixed(2)),
+                    harvestDate: l.harvestDate || '2026-09-09',
+                    status: 'Available',
+                    color: l.color || '#10B981',
+                    image: l.image || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=80'
+                }));
+                farmersListings = [...mappedListings, ...farmersListings.filter(fl => !mappedListings.some(ml => ml.id === fl.id))];
+                if (typeof renderAllViews === 'function') renderAllViews();
+                console.log('✅ Shopkeeper Hub synced with MongoDB / Express API');
+            }
+        }
+    } catch (e) {
+        console.log('ℹ️ Shopkeeper Hub in standalone mode');
+    }
+}
+
 /**
  * FORAGE B2B SHOPKEEPER & MIDDLEMAN HUB
  * Frontend Architecture & Mock Data Store
@@ -365,6 +406,7 @@ let currentSort = 'price-asc';
 let currentOrderFilter = 'all';
 
 document.addEventListener('DOMContentLoaded', () => {
+    syncShopkeeperDataWithBackend();
     initNavigationTabs();
     initMobileSidebar();
     initProcurementFilters();

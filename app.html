@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forage | Unified Agri-Supply Chain Master Cockpit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    :root {
+      --bg-dark: #070c14;
+      --bg-surface: #0e1726;
+      --bg-card: rgba(17, 26, 46, 0.85);
+      --border: rgba(255, 255, 255, 0.09);
+      --border-glow: rgba(16, 185, 129, 0.35);
+      --primary: #10b981;
+      --primary-glow: rgba(16, 185, 129, 0.2);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text);
+      font-family: var(--font-sans);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header.cockpit-header {
+      background: #0b1320;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      z-index: 50;
+      flex-shrink: 0;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.03em;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .logo-badge span.dot {
+      color: var(--primary);
+    }
+
+    .system-status-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-pill {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #34d399;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulseAnim 2s infinite;
+    }
+
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .portal-nav-tabs {
+      display: flex;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      padding: 4px;
+      border-radius: 12px;
+      gap: 4px;
+    }
+
+    .portal-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .portal-tab:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .portal-tab.active {
+      background: var(--primary);
+      color: #052e16;
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.4);
+    }
+
+    .portal-tab .shortcut-key {
+      font-size: 0.65rem;
+      font-family: var(--font-mono);
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.25);
+      opacity: 0.8;
+    }
+
+    .cockpit-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .action-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .main-viewport-container {
+      flex: 1;
+      position: relative;
+      background: #000;
+      overflow: hidden;
+    }
+
+    iframe.portal-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: #0d1629;
+    }
+
+    .api-console-view {
+      display: none;
+      height: 100%;
+      background: #080e18;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .console-grid {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 18px;
+    }
+
+    .endpoint-card {
+      background: #0f1a2c;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .endpoint-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .http-method {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+    .method-get { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .method-post { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+
+    .endpoint-url {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: #e2e8f0;
+    }
+
+    .endpoint-desc {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .btn-test-endpoint {
+      background: var(--primary);
+      color: #052e16;
+      border: none;
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      cursor: pointer;
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-test-endpoint:hover {
+      background: #34d399;
+    }
+
+    .response-output {
+      background: #060a10;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: #94a3b8;
+      max-height: 180px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="cockpit-header">
+    <div class="brand-section">
+      <a href="index.html" class="logo-badge" title="Back to Landing Page">
+        Forage<span class="dot">.</span>
+      </a>
+      <div class="system-status-pills">
+        <div class="status-pill"><span class="pulse"></span> API Port 3000</div>
+        <div class="status-pill"><i class="ph-bold ph-database"></i> supply_chain_db</div>
+      </div>
+    </div>
+
+    <nav class="portal-nav-tabs">
+      <button class="portal-tab active" id="tabFarmer" onclick="selectPortal('farmer')">
+        <i class="ph-bold ph-tractor"></i> Farmer Portal <span class="shortcut-key">1</span>
+      </button>
+      <button class="portal-tab" id="tabShopkeeper" onclick="selectPortal('shopkeeper')">
+        <i class="ph-bold ph-storefront"></i> Shopkeeper Hub <span class="shortcut-key">2</span>
+      </button>
+      <button class="portal-tab" id="tabCustomer" onclick="selectPortal('customer')">
+        <i class="ph-bold ph-cooking-pot"></i> Consumer Pantry <span class="shortcut-key">3</span>
+      </button>
+      <button class="portal-tab" id="tabDatabase" onclick="selectPortal('database')">
+        <i class="ph-bold ph-database"></i> DB Explorer <span class="shortcut-key">4</span>
+      </button>
+      <button class="portal-tab" id="tabApi" onclick="selectPortal('api')">
+        <i class="ph-bold ph-terminal-window"></i> API Console <span class="shortcut-key">5</span>
+      </button>
+    </nav>
+
+    <div class="cockpit-actions">
+      <button type="button" class="action-btn" onclick="reloadCurrentIframe()" title="Reload current portal view">
+        <i class="ph-bold ph-arrows-clockwise"></i> Refresh
+      </button>
+      <a id="btnExternalLink" href="farmer.html" target="_blank" class="action-btn" title="Open in separate tab">
+        <i class="ph-bold ph-arrow-square-out"></i> Detach Tab
+      </a>
+    </div>
+  </header>
+
+  <main class="main-viewport-container">
+    <iframe id="viewportIframe" class="portal-iframe" src="farmer.html"></iframe>
+
+    <div id="apiConsoleView" class="api-console-view">
+      <div style="max-width: 1300px; margin: 0 auto 20px;">
+        <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+          <i class="ph-bold ph-plugs-connected" style="color: var(--primary);"></i> Live Fullstack API &amp; Supply Chain Engine
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.875rem;">
+          Directly test and inspect the live Express.js endpoints and native MongoDB <code style="font-family: var(--font-mono); color: #34d399;">supply_chain_db</code> queries.
+        </p>
+      </div>
+
+      <div class="console-grid">
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="http-method method-get">GET</span>
+            <span class="endpoint-url">/api/status</span>
+          </div>
+          <p class="endpoint-desc">Checks backend health, server uptime, and database connection state.</p>
+          <button type="button" class="btn-test-endpoint" onclick="testApi('/api/status', 'resStatus')">
+            <i class="ph-bold ph-play"></i> Execute GET
+          </button>
+          <pre class="response-output" id="resStatus"></pre>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="http-method method-get">GET</span>
+            <span class="endpoint-url">/api/listings</span>
+          </div>
+          <p class="endpoint-desc">Retrieves all farmer produce batches available for B2B shopkeeper procurement.</p>
+          <button type="button" class="btn-test-endpoint" onclick="testApi('/api/listings', 'resListings')">
+            <i class="ph-bold ph-play"></i> Execute GET
+          </button>
+          <pre class="response-output" id="resListings"></pre>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="http-method method-get">GET</span>
+            <span class="endpoint-url">/api/pantry</span>
+          </div>
+          <p class="endpoint-desc">Fetches 30 items from <code style="font-family: var(--font-mono);">pantry_inventory</code> with remaining shelf life days.</p>
+          <button type="button" class="btn-test-endpoint" onclick="testApi('/api/pantry', 'resPantry')">
+            <i class="ph-bold ph-play"></i> Execute GET
+          </button>
+          <pre class="response-output" id="resPantry"></pre>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="http-method method-get">GET</span>
+            <span class="endpoint-url">/api/prices</span>
+          </div>
+          <p class="endpoint-desc">Returns 30 mandi price indices (farm-gate vs wholesale vs retail) from <code style="font-family: var(--font-mono);">price_index</code>.</p>
+          <button type="button" class="btn-test-endpoint" onclick="testApi('/api/prices', 'resPrices')">
+            <i class="ph-bold ph-play"></i> Execute GET
+          </button>
+          <pre class="response-output" id="resPrices"></pre>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="http-method method-get">GET</span>
+            <span class="endpoint-url">/api/transit</span>
+          </div>
+          <p class="endpoint-desc">Pulls real-world transit telemetry logs and freshness degradation from <code style="font-family: var(--font-mono);">transit_logs</code>.</p>
+          <button type="button" class="btn-test-endpoint" onclick="testApi('/api/transit', 'resTransit')">
+            <i class="ph-bold ph-play"></i> Execute GET
+          </button>
+          <pre class="response-output" id="resTransit"></pre>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="http-method method-post">POST</span>
+            <span class="endpoint-url">/api/logistics/health</span>
+          </div>
+          <p class="endpoint-desc">Simulates thermal &amp; vibrational decay: 12 hrs transit at 28°C for Tomatoes.</p>
+          <button type="button" class="btn-test-endpoint" onclick="testPost('/api/logistics/health', {crop: 'Tomatoes', hoursInTransit: 12, tempCelsius: 28}, 'resHealth')">
+            <i class="ph-bold ph-play"></i> Execute POST
+          </button>
+          <pre class="response-output" id="resHealth"></pre>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="http-method method-post">POST</span>
+            <span class="endpoint-url">/api/market/markup</span>
+          </div>
+          <p class="endpoint-desc">Calculates markup &amp; middleman margins (Farm: ₹27.45 &rarr; Retail: ₹45.19).</p>
+          <button type="button" class="btn-test-endpoint" onclick="testPost('/api/market/markup', {baseFarmPrice: 27.45, currentMarketPrice: 45.19}, 'resMarkup')">
+            <i class="ph-bold ph-play"></i> Execute POST
+          </button>
+          <pre class="response-output" id="resMarkup"></pre>
+        </div>
+
+        <div class="endpoint-card">
+          <div class="endpoint-header">
+            <span class="http-method method-post">POST</span>
+            <span class="endpoint-url">/api/ai/recipe</span>
+          </div>
+          <p class="endpoint-desc">AI Zero-Waste Chef: synthesizes rescue recipe for expiring Tomatoes &amp; Spinach.</p>
+          <button type="button" class="btn-test-endpoint" onclick="testPost('/api/ai/recipe', {expiringIngredients: ['Tomatoes', 'Spinach']}, 'resRecipe')">
+            <i class="ph-bold ph-play"></i> Execute POST
+          </button>
+          <pre class="response-output" id="resRecipe"></pre>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const PORTALS = {
+      farmer: { url: 'farmer.html', tabId: 'tabFarmer' },
+      shopkeeper: { url: 'shopkeeper.html', tabId: 'tabShopkeeper' },
+      customer: { url: 'customer.html', tabId: 'tabCustomer' },
+      database: { url: 'supply_chain_dashboard.html', tabId: 'tabDatabase' },
+      api: { url: null, tabId: 'tabApi' }
+    };
+
+    let activePortal = 'farmer';
+
+    function selectPortal(key) {
+      activePortal = key;
+      const config = PORTALS[key];
+      const iframe = document.getElementById('viewportIframe');
+      const apiConsole = document.getElementById('apiConsoleView');
+      const extLink = document.getElementById('btnExternalLink');
+
+      document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(config.tabId).classList.add('active');
+
+      if (key === 'api') {
+        iframe.style.display = 'none';
+        apiConsole.style.display = 'block';
+        extLink.href = 'http://localhost:3000/api/status';
+      } else {
+        iframe.style.display = 'block';
+        apiConsole.style.display = 'none';
+        iframe.src = config.url;
+        extLink.href = config.url;
+      }
+    }
+
+    function reloadCurrentIframe() {
+      const iframe = document.getElementById('viewportIframe');
+      if (activePortal !== 'api') {
+        iframe.contentWindow.location.reload();
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      if (e.key === '1') selectPortal('farmer');
+      if (e.key === '2') selectPortal('shopkeeper');
+      if (e.key === '3') selectPortal('customer');
+      if (e.key === '4') selectPortal('database');
+      if (e.key === '5') selectPortal('api');
+    });
+
+    async function testApi(endpoint, targetId) {
+      const el = document.getElementById(targetId);
+      el.style.display = 'block';
+      el.textContent = 'Fetching from ' + endpoint + '...';
+      try {
+        const res = await fetch(endpoint);
+        const data = await res.json();
+        el.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        el.textContent = 'Error: ' + err.message;
+      }
+    }
+
+    async function testPost(endpoint, bodyData, targetId) {
+      const el = document.getElementById(targetId);
+      el.style.display = 'block';
+      el.textContent = 'Sending POST to ' + endpoint + '...';
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bodyData)
+        });
+        const data = await res.json();
+        el.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        el.textContent = 'Error: ' + err.message;
+      }
+    }
+  </script>
+</body>
+</html>

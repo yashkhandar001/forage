@@ -1,3 +1,38 @@
+
+const API_BASE = 'http://localhost:3000/api';
+
+async function syncFarmerDataWithBackend() {
+    try {
+        const res = await fetch(`${API_BASE}/listings`);
+        if (res.ok) {
+            const liveListings = await res.json();
+            if (liveListings && liveListings.length > 0) {
+                const liveMapped = liveListings.map(item => ({
+                    id: item.id || item.record_id || ('F-CROP-' + Math.floor(Math.random()*1000)),
+                    name: item.name || item.crop || 'Fresh Harvest Crop',
+                    category: item.category || 'Vegetables',
+                    variety: item.variety || 'Standard Grade',
+                    quantity: Number(item.quantity || item.availableQtyKg || 500),
+                    capacityMax: Number(item.capacityMax || 1000),
+                    unit: item.unit || 'kg',
+                    pricePerUnit: Number(item.pricePerUnit || item.farmGatePrice || item.farm_gate_price_inr_per_kg || 25),
+                    mandiBenchmark: Number(item.mandiBenchmark || 22),
+                    harvestDate: item.harvestDate || item.date || '2026-09-09',
+                    location: item.location || 'Local Farm Storage',
+                    status: item.status || 'Available',
+                    color: item.color || '#10B981',
+                    image: item.image || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=80'
+                }));
+                farmerCrops = [...liveMapped, ...farmerCrops.filter(fc => !liveMapped.some(lm => lm.id === fc.id))];
+                if (typeof renderAllViews === 'function') renderAllViews();
+                console.log('✅ Farmer data synced with MongoDB / Express API');
+            }
+        }
+    } catch (e) {
+        console.log('ℹ️ Farmer portal running in standalone mode');
+    }
+}
+
 /**
  * FORAGE FARMER COMMAND CENTER
  * Frontend Architecture, Charts, Interactive Simulator & Mock Data Store
@@ -194,6 +229,7 @@ let currentCropsViewMode = 'cards'; // 'cards' or 'table'
 let isAudioPlaying = false;
 
 document.addEventListener('DOMContentLoaded', () => {
+    syncFarmerDataWithBackend();
     initNavigation();
     renderAllViews();
     initCharts();
@@ -1439,6 +1475,7 @@ function initModals() {
             };
 
             farmerCrops.unshift(newCrop);
+            fetch(`${API_BASE}/listings`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newCrop) }).catch(() => {});
             triggerCelebration();
             closeAdd();
             renderAllViews();
