@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forage | Consumer Kitchen & Smart Pantry</title>
+    <link rel="stylesheet" href="customer.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="customer-body">
+
+    <!-- GLSL BACKGROUND CANVAS -->
+    <canvas id="gl-canvas"></canvas>
+
+    <!-- TOP TELEMETRY / FRESHNESS STATUS BAR -->
+    <div class="kitchen-telemetry-bar">
+        <div class="kitchen-telemetry-content">
+            <span class="kitchen-dot"></span>
+            <span><strong>KITCHEN INTELLIGENCE:</strong> <span id="expiringAlertBanner" class="alert-highlight">3 items expiring soon</span> in your pantry! Use our AI Chef to generate zero-waste recipes.</span>
+        </div>
+        <div class="hub-nav-links">
+            <a href="index.html" class="hub-link"><i class="ph ph-arrow-left"></i> Home</a>
+            <a href="farmer.html" class="hub-link"><i class="ph ph-tractor"></i> Farmer</a>
+            <a href="shopkeeper.html" class="hub-link"><i class="ph ph-storefront"></i> Shopkeeper</a>
+        </div>
+    </div>
+
+    <!-- MAIN APP WRAPPER -->
+    <div class="app-layout">
+        
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <span class="brand-text">Forage.</span>
+                    <span class="role-badge">CONSUMER KITCHEN</span>
+                </div>
+                <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+
+            <div class="user-kitchen-card">
+                <div class="kitchen-avatar">
+                    <i class="ph-duotone ph-cooking-pot"></i>
+                </div>
+                <div class="kitchen-user-details">
+                    <span class="kitchen-name">Ananya's Kitchen</span>
+                    <span class="kitchen-address">Mumbai, Bandra West</span>
+                </div>
+            </div>
+
+            <!-- SPA NAVIGATION TABS -->
+            <nav class="sidebar-nav">
+                <div class="nav-category">HOME PANTRY</div>
+                <button type="button" class="nav-btn active" data-tab="pantry">
+                    <i class="ph-bold ph-refrigerator"></i>
+                    <span>My Pantry</span>
+                    <span class="pantry-count-badge" id="sidebarPantryCount">8</span>
+                </button>
+                <button type="button" class="nav-btn hero-tab-btn" data-tab="recipe-generator">
+                    <i class="ph-fill ph-sparkle"></i>
+                    <span>AI Recipe Generator</span>
+                    <span class="hero-chip">HERO</span>
+                </button>
+                <button type="button" class="nav-btn" data-tab="expiry-alerts">
+                    <i class="ph-bold ph-warning-circle"></i>
+                    <span>Expiry Radar</span>
+                    <span class="alert-count-pill" id="sidebarExpiringCount">3 Expiring</span>
+                </button>
+
+                <div class="nav-category">MARKET & ORDERS</div>
+                <button type="button" class="nav-btn" data-tab="storefront">
+                    <i class="ph-bold ph-storefront"></i>
+                    <span>Fresh Market</span>
+                    <span class="market-pill">Direct</span>
+                </button>
+                <button type="button" class="nav-btn" data-tab="history">
+                    <i class="ph-bold ph-clock-counter-clockwise"></i>
+                    <span>Purchase History</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="pantry-health-metric">
+                    <div class="ph-label">
+                        <span>Zero-Waste Score:</span>
+                        <strong class="score-green">94%</strong>
+                    </div>
+                    <div class="health-bar-track">
+                        <div class="health-bar-fill" style="width: 94%;"></div>
+                    </div>
+                    <span class="health-note">12.4 kg food saved from waste!</span>
+                </div>
+                <a href="index.html" class="switch-persona-link"><i class="ph ph-sign-out"></i> Switch Persona</a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT CONTAINER -->
+        <main class="main-content">
+            
+            <!-- TOP BAR -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button type="button" class="hamburger-btn" id="sidebarToggleBtn" aria-label="Toggle Navigation">
+                        <i class="ph-bold ph-list"></i>
+                    </button>
+                    <div class="topbar-titles">
+                        <h1 id="pageTitle">My Pantry & Kitchen Inventory</h1>
+                        <p id="pageSubtitle">Track shelf-life countdowns, prevent kitchen spoilage & cook intelligent zero-waste recipes.</p>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="pantry-search-box">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <input type="text" id="pantrySearchInput" placeholder="Search pantry or market produce...">
+                    </div>
+                    <button type="button" class="btn-chef-hero" onclick="switchTab('recipe-generator')">
+                        <i class="ph-fill ph-sparkle"></i> What Should I Cook?
+                    </button>
+                </div>
+            </header>
+
+            <!-- ==================================================== -->
+            <!-- TAB 1: MY PANTRY (INVENTORY TRACKER) -->
+            <!-- ==================================================== -->
+            <section id="tab-pantry" class="spa-tab active">
+                <div class="pantry-summary-strip">
+                    <div class="summary-pill total">
+                        <i class="ph-bold ph-package"></i>
+                        <span>Total Items: <strong id="totalPantryCount">8</strong></span>
+                    </div>
+                    <div class="summary-pill red">
+                        <i class="ph-fill ph-warning-circle"></i>
+                        <span>Urgent (&lt; 3 days): <strong id="urgentPantryCount">2</strong></span>
+                    </div>
+                    <div class="summary-pill yellow">
+                        <i class="ph-fill ph-clock"></i>
+                        <span>Expiring Soon (3–7 days): <strong id="warningPantryCount">1</strong></span>
+                    </div>
+                    <div class="summary-pill green">
+                        <i class="ph-fill ph-check-circle"></i>
+                        <span>Fresh (&gt; 7 days): <strong id="freshPantryCount">5</strong></span>
+                    </div>
+                </div>
+
+                <!-- Storage Condition Filters & Quick Add -->
+                <div class="pantry-controls-bar">
+                    <div class="storage-filters" id="storageFilters">
+                        <button type="button" class="storage-chip active" data-storage="all">All Items</button>
+                        <button type="button" class="storage-chip" data-storage="Refrigerated"><i class="ph ph-thermometer-cold"></i> Refrigerated</button>
+                        <button type="button" class="storage-chip" data-storage="Cool/Dry"><i class="ph ph-sun"></i> Cool & Dry</button>
+                        <button type="button" class="storage-chip" data-storage="Dry"><i class="ph ph-archive"></i> Dry Pantry</button>
+                    </div>
+                    <div class="pantry-actions-group">
+                        <button type="button" class="btn-secondary-sm" onclick="switchTab('storefront')">
+                            <i class="ph-bold ph-plus"></i> Buy from Farm Market
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PANTRY ITEMS GRID -->
+                <div class="pantry-grid" id="pantryGrid">
+                    <!-- Populated dynamically from pantryItems array -->
+                </div>
+
+                <!-- EMPTY STATE -->
+                <div class="empty-state-box hidden" id="pantryEmptyState">
+                    <div class="empty-icon"><i class="ph-duotone ph-basket"></i></div>
+                    <h3>Your Pantry is Empty!</h3>
+                    <p>You have no ingredients recorded in your kitchen storage. Visit our Fresh Market to buy directly from local growers.</p>
+                    <button type="button" class="btn-primary-hero" onclick="switchTab('storefront')">
+                        <i class="ph-bold ph-shopping-bag"></i> Go to Fresh Market &rarr;
+                    </button>
+                </div>
+            </section>
+
+            <!-- ==================================================== -->
+            <!-- TAB 2: AI RECIPE GENERATOR (HERO FEATURE) -->
+            <!-- ==================================================== -->
+            <section id="tab-recipe-generator" class="spa-tab">
+                <div class="hero-chef-banner">
+                    <div class="chef-badge-sparkle">
+                        <i class="ph-fill ph-sparkle"></i> FORAGE ZERO-WASTE CHEF AI
+                    </div>
+                    <h2>"What should I cook tonight?"</h2>
+                    <p>Our intelligent culinary algorithm scans your kitchen pantry for ingredients closest to expiring and formulates exotic, zero-waste recipes before they go bad.</p>
+                    
+                    <div class="hero-ingredients-detect">
+                        <span class="detect-title">Pantry Ingredients Targeted for Cooking:</span>
+                        <div class="expiring-chips-row" id="targetedExpiringChips">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="chef-trigger-row">
+                        <button type="button" class="btn-generate-ai" id="generateRecipeBtn">
+                            <i class="ph-fill ph-sparkle"></i> Generate Recipe From Expiring Produce
+                        </button>
+                        <button type="button" class="btn-secondary-white" id="randomizeRecipeBtn">
+                            <i class="ph-bold ph-shuffle"></i> Surprise Me with Exotic Recipe
+                        </button>
+                    </div>
+                </div>
+
+                <!-- RECIPE DISPLAY CONTAINER -->
+                <div class="recipe-results-area" id="recipeResultsArea">
+                    <!-- Populated dynamically -->
+                </div>
+            </section>
+
+            <!-- ==================================================== -->
+            <!-- TAB 3: EXPIRY RADAR & ALERTS -->
+            <!-- ==================================================== -->
+            <section id="tab-expiry-alerts" class="spa-tab">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="title-wrap">
+                            <h3><i class="ph-bold ph-warning-circle"></i> Kitchen Expiry Radar & Waste Prevention</h3>
+                            <p>Derived from official food stability logs (temperature, storage medium, and natural respiration rates).</p>
+                        </div>
+                        <span class="badge-accent">REAL-TIME MONITOR</span>
+                    </div>
+
+                    <div class="expiry-legend-strip">
+                        <div class="legend-item red">
+                            <span class="tag-red">🔴 CRITICAL (&lt; 3 Days)</span>
+                            <span>Immediate cooking required! Produce near end of shelf-life.</span>
+                        </div>
+                        <div class="legend-item yellow">
+                            <span class="tag-yellow">🟡 WARNING (3–7 Days)</span>
+                            <span>Cook within this week to prevent nutritional decline.</span>
+                        </div>
+                        <div class="legend-item green">
+                            <span class="tag-green">🟢 FRESH (7+ Days)</span>
+                            <span>Peak freshness and flavor stability.</span>
+                        </div>
+                    </div>
+
+                    <div class="table-container mt-3">
+                        <table class="data-table" id="expiryTable">
+                            <thead>
+                                <tr>
+                                    <th>Ingredient</th>
+                                    <th>Quantity</th>
+                                    <th>Storage Type</th>
+                                    <th>Standard Shelf-Life</th>
+                                    <th>Days Remaining</th>
+                                    <th>Status Tag</th>
+                                    <th>Recommended Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expiryTableBody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================================== -->
+            <!-- TAB 4: FRESH MARKET (RETAIL STOREFRONT) -->
+            <!-- ==================================================== -->
+            <section id="tab-storefront" class="spa-tab">
+                <div class="storefront-hero">
+                    <div class="sf-title">
+                        <h2>Direct Farm Produce Storefront</h2>
+                        <p>Buy premium, pesticide-audited produce with complete farm-to-table traceability.</p>
+                    </div>
+                    <div class="sf-cart-status">
+                        <button type="button" class="cart-btn" onclick="switchTab('pantry')">
+                            <i class="ph-bold ph-basket"></i>
+                            <span>View Kitchen Pantry (<strong id="headerPantryCount">8</strong>)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Category filter chips -->
+                <div class="market-category-filters" id="marketCategoryFilters">
+                    <button type="button" class="market-cat-btn active" data-cat="all">All Fresh Produce (10)</button>
+                    <button type="button" class="market-cat-btn" data-cat="Vegetables">Vegetables</button>
+                    <button type="button" class="market-cat-btn" data-cat="Fruits">Fruits</button>
+                    <button type="button" class="market-cat-btn" data-cat="Grains">Pantry Staples</button>
+                </div>
+
+                <!-- RETAIL PRODUCE GRID -->
+                <div class="retail-products-grid" id="retailProductsGrid">
+                    <!-- Populated dynamically -->
+                </div>
+            </section>
+
+            <!-- ==================================================== -->
+            <!-- TAB 5: PURCHASE HISTORY -->
+            <!-- ==================================================== -->
+            <section id="tab-history" class="spa-tab">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="title-wrap">
+                            <h3><i class="ph-bold ph-receipt"></i> Farm Direct Purchase History</h3>
+                            <p>Verify provenance certificates and blockchain batch IDs for your produce.</p>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Order No</th>
+                                    <th>Item & Quantity</th>
+                                    <th>Farm Origin</th>
+                                    <th>Farmer</th>
+                                    <th>Harvest Date</th>
+                                    <th>Amount Paid</th>
+                                    <th>Traceability Certificate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="purchaseHistoryBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- RECIPE COOKED MODAL -->
+    <div class="modal-overlay" id="cookModal">
+        <div class="modal-container">
+            <button type="button" class="close-modal" id="closeCookModal"><i class="ph ph-x"></i></button>
+            <div class="modal-header">
+                <div class="chef-hat-icon"><i class="ph-fill ph-cooking-pot"></i></div>
+                <h3 id="cookedRecipeTitle">Bon Appétit!</h3>
+                <p>Ingredients successfully deducted from your pantry.</p>
+            </div>
+            <div class="cooked-details-box" id="cookedDetailsBox">
+                <!-- Details injected by JS -->
+            </div>
+            <button type="button" class="btn-primary-hero full-width" id="confirmCookDoneBtn">
+                Return to My Pantry &rarr;
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">Added to your Kitchen Pantry!</div>
+
+    <script src="gl.js"></script>
+    <script src="customer.js"></script>
+</body>
+</html>

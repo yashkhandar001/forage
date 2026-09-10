@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forage | From Farm to Market to You</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <!-- LOOPING SWOOSH LOADER -->
+    <div id="loading-screen">
+        <div class="swoosh-container">
+            <svg viewBox="0 0 1000 400" preserveAspectRatio="none" class="swoosh-svg">
+                <!-- Lines from Left -->
+                <path d="M-200,100 C150,400 350,0 650,200 C850,300 1000,50 1200,150" class="swoosh-path p1"></path>
+                <path d="M-100,300 C200,100 400,400 700,100 C900,-50 1100,250 1200,200" class="swoosh-path p3"></path>
+                <!-- Lines from Right -->
+                <path d="M1200,350 C900,100 700,500 400,200 C200,50 0,350 -200,200" class="swoosh-path p2"></path>
+                <path d="M1200,50 C800,400 600,-50 300,250 C100,400 -100,100 -200,150" class="swoosh-path p4"></path>
+                <!-- Center loops -->
+                <path d="M200,-100 C300,500 700,-100 800,500" class="swoosh-path p5"></path>
+            </svg>
+        </div>
+        <!-- TO PUT YOUR LOGO HERE: Change the src below to match your logo file name exactly -->
+        <img src="forage-logo.png" alt="Forage Logo" class="loader-logo">
+    </div>
+
+    <!-- GLSL BACKGROUND CANVAS -->
+    <canvas id="gl-canvas"></canvas>
+
+    <!-- ULTRA-SLIM NAVBAR -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="brand-text">Forage.</span>
+            </a>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#roles">Perspectives</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#marketplace">Marketplace</a>
+                <div class="nav-dropdown">
+                    <button type="button" class="nav-drop-btn">Portals <i class="ph ph-caret-down"></i></button>
+                    <div class="nav-dropdown-menu">
+                        <a href="farmer.html" class="dropdown-item"><i class="ph-bold ph-tractor"></i> Farmer Command Center</a>
+                        <a href="shopkeeper.html" class="dropdown-item"><i class="ph-bold ph-storefront"></i> Shopkeeper Dashboard</a>
+                        <a href="customer.html" class="dropdown-item"><i class="ph-bold ph-cooking-pot"></i> Consumer Kitchen</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <button type="button" class="btn-text open-modal" data-role="General">Login</button>
+                <div class="header-portal-pills">
+                    <a href="farmer.html" class="portal-pill farmer" title="Farmer Command Center"><i class="ph-bold ph-tractor"></i> Farmer</a>
+                    <a href="shopkeeper.html" class="portal-pill shopkeeper" title="Shopkeeper Dashboard"><i class="ph-bold ph-storefront"></i> Shopkeeper</a>
+                    <a href="customer.html" class="portal-pill customer" title="Consumer Kitchen"><i class="ph-bold ph-cooking-pot"></i> Kitchen</a>
+                </div>
+            </div>
+            <button type="button" class="mobile-menu-btn" aria-label="Toggle Menu">
+                <i class="ph ph-list"></i>
+            </button>
+        </div>
+        <!-- Mobile Nav Menu -->
+        <div class="mobile-nav-pane" id="mobile-nav">
+            <a href="#home" class="mobile-nav-link">Home</a>
+            <a href="#roles" class="mobile-nav-link">Perspectives</a>
+            <a href="#how-it-works" class="mobile-nav-link">How It Works</a>
+            <a href="#marketplace" class="mobile-nav-link">Marketplace</a>
+            <div class="mobile-portals-title">LAUNCH DASHBOARDS</div>
+            <div class="mobile-portal-grid">
+                <a href="farmer.html" class="mobile-portal-card farmer"><i class="ph-bold ph-tractor"></i> Farmer Portal</a>
+                <a href="shopkeeper.html" class="mobile-portal-card shopkeeper"><i class="ph-bold ph-storefront"></i> Shopkeeper Dashboard</a>
+                <a href="customer.html" class="mobile-portal-card customer"><i class="ph-bold ph-cooking-pot"></i> Consumer Kitchen</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content fade-in-up">
+                <div class="hero-badge"><i class="ph-bold ph-sparkle"></i> Intelligent Agri-Supply Chain Network</div>
+                <h1>From Farm to Market to You.</h1>
+                <p>A connected digital ecosystem that empowers farmers to sell smarter, middlemen to source with transit telemetry, and consumers to cook sustainably with zero waste.</p>
+                <div class="hero-buttons">
+                    <button type="button" class="btn-primary" id="explore-btn">Explore Ecosystem</button>
+                    <button type="button" class="btn-secondary open-modal" data-role="General">Launch Portal Demo</button>
+                </div>
+                <div class="hero-quick-portals">
+                    <span>Jump directly to:</span>
+                    <a href="farmer.html" class="chip-link"><i class="ph-fill ph-tractor"></i> Farmer</a>
+                    <a href="shopkeeper.html" class="chip-link"><i class="ph-fill ph-storefront"></i> Shopkeeper</a>
+                    <a href="customer.html" class="chip-link"><i class="ph-fill ph-cooking-pot"></i> Kitchen</a>
+                </div>
+            </div>
+            
+            <div class="hero-visual fade-in-up delay-1">
+                <div class="visual-center">
+                    <div class="connection-line"></div>
+                </div>
+                <div class="floating-card card-1">
+                    <div class="card-header">
+                        <i class="ph-fill ph-plant"></i>
+                        <span>Fresh Tomatoes</span>
+                    </div>
+                    <div class="card-data">
+                        <span class="price">₹32/kg</span>
+                        <span class="stock">Available: 850 kg • Harvest: Today</span>
+                    </div>
+                </div>
+                <div class="floating-card card-2">
+                    <div class="card-header">
+                        <i class="ph-fill ph-truck"></i>
+                        <span>Transit Degradation Monitor</span>
+                    </div>
+                    <div class="card-data">
+                        <span class="price accent-text" style="font-size: 0.95rem;">92% Freshness Score</span>
+                        <span class="detail">Nashik &rarr; Mumbai • 18.8°C / 4.1 Vib</span>
+                    </div>
+                </div>
+                <div class="floating-card card-3">
+                    <div class="card-header">
+                        <i class="ph-fill ph-cooking-pot accent-text"></i>
+                        <span>AI Kitchen Chef</span>
+                    </div>
+                    <div class="card-data">
+                        <span class="detail">Expiring in 2 days: Tomatoes & Coriander</span>
+                        <span class="stock" style="color: var(--primary); font-weight: 600;">Recipe: Shakshuka Ready &rarr;</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMPACT ROLE SELECTION (REFINED 3 PERSPECTIVES) -->
+    <section id="roles" class="roles-section reveal">
+        <div class="section-header">
+            <span class="section-tag">THREE PILLARS • ONE SEAMLESS WORKFLOW</span>
+            <h2>One Platform. Three Tailored Portals.</h2>
+            <p>Select your dashboard below to experience the end-to-end transparent supply chain.</p>
+        </div>
+        <div class="roles-grid">
+            <!-- FARMER CARD -->
+            <div class="role-card role-farmer">
+                <div class="role-card-top">
+                    <div class="role-icon"><i class="ph-duotone ph-tractor"></i></div>
+                    <span class="role-badge farmer-badge">PRODUCER COMMAND</span>
+                </div>
+                <h3>Farmer / Producer</h3>
+                <p class="role-desc">Empower cultivators with real-time mandi intelligence, direct B2B harvest listings, and instant order fulfillment.</p>
+                <div class="role-live-chip">
+                    <span class="pulse-dot green"></span>
+                    <span>Live: ₹3,42,800 Revenue • 14.2T Volume</span>
+                </div>
+                <ul class="role-features">
+                    <li><i class="ph-bold ph-check"></i> <strong>Crop Command:</strong> Add & list harvest batches dynamically</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Order Drawer:</strong> Accept, reject & complete shopkeeper orders</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Capacity Bars:</strong> Visual harvest volume utilization</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Forage AI:</strong> Live Mandi pricing momentum intelligence</li>
+                </ul>
+                <div class="role-actions-row">
+                    <a href="farmer.html" class="btn-primary role-launch-btn">
+                        <span>Launch Farmer Portal</span>
+                        <i class="ph-bold ph-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SHOPKEEPER CARD -->
+            <div class="role-card role-shopkeeper">
+                <div class="role-card-top">
+                    <div class="role-icon"><i class="ph-duotone ph-storefront"></i></div>
+                    <span class="role-badge shopkeeper-badge">B2B LOGISTICS & PROCUREMENT</span>
+                </div>
+                <h3>Shopkeeper / Middleman</h3>
+                <p class="role-desc">Procure bulk harvests with transparent farm-gate pricing, monitor in-transit degradation, and optimize retail margins.</p>
+                <div class="role-live-chip">
+                    <span class="pulse-dot amber"></span>
+                    <span>Live: 87.2% Transit Freshness • 14.2% Margin</span>
+                </div>
+                <ul class="role-features">
+                    <li><i class="ph-bold ph-check"></i> <strong>Procurement Market:</strong> Multi-filter B2B bulk listings</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Transit Health:</strong> Real-time Degradation Algorithm gauge</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Margin Analytics:</strong> Buy Price vs. Sell Price audit cards</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Demand Forecast AI:</strong> Predictive procurement advisory</li>
+                </ul>
+                <div class="role-actions-row">
+                    <a href="shopkeeper.html" class="btn-primary role-launch-btn shopkeeper-theme">
+                        <span>Launch Shopkeeper Hub</span>
+                        <i class="ph-bold ph-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- CUSTOMER CARD -->
+            <div class="role-card role-customer">
+                <div class="role-card-top">
+                    <div class="role-icon"><i class="ph-duotone ph-cooking-pot"></i></div>
+                    <span class="role-badge customer-badge">CONSUMER KITCHEN</span>
+                </div>
+                <h3>End Customer / Kitchen</h3>
+                <p class="role-desc">Shop farm-fresh produce with complete origin transparency, track home pantry shelf-life, and generate zero-waste recipes.</p>
+                <div class="role-live-chip">
+                    <span class="pulse-dot emerald"></span>
+                    <span>Live: 4 Items Expiring • Zero-Waste Chef</span>
+                </div>
+                <ul class="role-features">
+                    <li><i class="ph-bold ph-check"></i> <strong>Fresh Storefront:</strong> Direct retail buying to your pantry</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>My Pantry Tracker:</strong> Visual storage conditions & shelf-life</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>Expiry Radar:</strong> Green, Yellow & Red countdown tags</li>
+                    <li><i class="ph-bold ph-check"></i> <strong>AI Recipe Chef:</strong> Generates gourmet meals from expiring items</li>
+                </ul>
+                <div class="role-actions-row">
+                    <a href="customer.html" class="btn-primary role-launch-btn customer-theme">
+                        <span>Launch Consumer Kitchen</span>
+                        <i class="ph-bold ph-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works" class="flow-section reveal">
+        <div class="section-header">
+            <h2>The Forage Journey</h2>
+            <p>A seamless process from the soil to the table.</p>
+        </div>
+        <div class="flow-container">
+            <div class="flow-card">
+                <div class="step-badge">01</div>
+                <h3>Farmers Produce</h3>
+                <p>Farmers list their crops, availability, and transparent pricing.</p>
+            </div>
+            <div class="flow-connector"><i class="ph ph-caret-right"></i></div>
+            
+            <div class="flow-card">
+                <div class="step-badge">02</div>
+                <h3>Businesses Source</h3>
+                <p>Shopkeepers easily discover and purchase bulk agricultural products.</p>
+            </div>
+            <div class="flow-connector"><i class="ph ph-caret-right"></i></div>
+            
+            <div class="flow-card">
+                <div class="step-badge">03</div>
+                <h3>Consumers Buy</h3>
+                <p>End customers purchase fresh products with complete market confidence.</p>
+            </div>
+            <div class="flow-connector"><i class="ph ph-caret-right"></i></div>
+            
+            <div class="flow-card highlight-card">
+                <div class="step-badge">04</div>
+                <h3>Everyone Benefits</h3>
+                <p>A completely transparent supply chain that maximizes value for all.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MARKETPLACE PREVIEW -->
+    <section id="marketplace" class="marketplace-section reveal">
+        <div class="section-header">
+            <h2>Live Marketplace</h2>
+            <div class="market-filters">
+                <div class="search-bar">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" placeholder="Search crops...">
+                </div>
+                <button type="button" class="filter-btn">Category <i class="ph ph-caret-down"></i></button>
+                <button type="button" class="filter-btn">Location <i class="ph ph-caret-down"></i></button>
+                <button type="button" class="filter-btn">Price <i class="ph ph-caret-down"></i></button>
+            </div>
+        </div>
+        <div class="market-grid">
+            <div class="crop-card">
+                <div class="crop-img-placeholder tomatoes"></div>
+                <div class="crop-info">
+                    <div class="crop-title-row">
+                        <h4>Tomatoes</h4>
+                        <span class="crop-price">₹32/kg</span>
+                    </div>
+                    <p class="crop-stock"><i class="ph ph-box-arrow-down"></i> 850 kg available</p>
+                </div>
+            </div>
+            <div class="crop-card">
+                <div class="crop-img-placeholder onions"></div>
+                <div class="crop-info">
+                    <div class="crop-title-row">
+                        <h4>Onions</h4>
+                        <span class="crop-price">₹28/kg</span>
+                    </div>
+                    <p class="crop-stock"><i class="ph ph-box-arrow-down"></i> 1,200 kg available</p>
+                </div>
+            </div>
+            <div class="crop-card">
+                <div class="crop-img-placeholder potatoes"></div>
+                <div class="crop-info">
+                    <div class="crop-title-row">
+                        <h4>Potatoes</h4>
+                        <span class="crop-price">₹24/kg</span>
+                    </div>
+                    <p class="crop-stock"><i class="ph ph-box-arrow-down"></i> 950 kg available</p>
+                </div>
+            </div>
+            <div class="crop-card">
+                <div class="crop-img-placeholder wheat"></div>
+                <div class="crop-info">
+                    <div class="crop-title-row">
+                        <h4>Wheat</h4>
+                        <span class="crop-price">₹42/kg</span>
+                    </div>
+                    <p class="crop-stock"><i class="ph ph-box-arrow-down"></i> 2,400 kg available</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DASHBOARD & AI PREVIEW -->
+    <section class="software-preview reveal">
+        <div class="preview-grid">
+            <div class="dashboard-preview">
+                <h3>Everything you need, in one place.</h3>
+                <div class="dash-ui">
+                    <div class="dash-nav"><div class="dash-dot"></div><div class="dash-dot"></div><div class="dash-dot"></div></div>
+                    <div class="dash-widgets">
+                        <div class="widget"><span class="w-label">Revenue</span><span class="w-val">₹42,500</span><div class="bar-chart"><div class="bar b1"></div><div class="bar b2"></div><div class="bar b3"></div></div></div>
+                        <div class="widget"><span class="w-label">Orders</span><span class="w-val">124</span><div class="line-chart"></div></div>
+                        <div class="widget"><span class="w-label">Inventory</span><span class="w-val">1.2T</span></div>
+                        <div class="widget"><span class="w-label">Market Price</span><span class="w-val up">&uarr; 2.4%</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ai-preview">
+                <h3>Intelligence for every step.</h3>
+                <div class="chat-ui">
+                    <div class="chat-message user-msg">
+                        <p>Should I sell my tomatoes now or wait?</p>
+                    </div>
+                    <div class="chat-message ai-msg">
+                        <div class="ai-icon"><i class="ph-fill ph-sparkle"></i></div>
+                        <p>Based on current market trends, demand is increasing. Consider monitoring prices as predictions show a 5% increase by weekend.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section reveal">
+        <div class="cta-content">
+            <h2>The future of agriculture is connected.</h2>
+            <p>"Whether you grow it, trade it, or buy it — Forage brings the entire journey together."</p>
+            <button type="button" class="btn-primary large open-modal" data-role="General">Get Started &rarr;</button>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="brand-text">Forage.</span>
+                </div>
+                <p>Connecting the agricultural ecosystem.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Platform</h4>
+                <a href="#">Farmer</a>
+                <a href="#">Shopkeeper</a>
+                <a href="#">Customer</a>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <a href="#">About</a>
+                <a href="#">Features</a>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <a href="#">How It Works</a>
+                <a href="#">Help</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Forage</p>
+            <div class="legal">
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LOGIN MODAL WITH PORTAL ROUTING -->
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal-container">
+            <button type="button" class="close-modal"><i class="ph ph-x"></i></button>
+            <div class="modal-header">
+                <span class="brand-text" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">Forage.</span>
+                <h3 id="modal-title">Access Forage Portals</h3>
+                <p>Select your persona to enter the respective dashboard.</p>
+            </div>
+            
+            <!-- Quick Role Select Cards inside Modal -->
+            <div class="modal-role-selector">
+                <button type="button" class="modal-role-card active" data-target-role="Farmer" data-url="farmer.html">
+                    <i class="ph-bold ph-tractor"></i>
+                    <span class="role-name">Farmer</span>
+                    <span class="role-hint">Producer Hub</span>
+                </button>
+                <button type="button" class="modal-role-card" data-target-role="Shopkeeper" data-url="shopkeeper.html">
+                    <i class="ph-bold ph-storefront"></i>
+                    <span class="role-name">Shopkeeper</span>
+                    <span class="role-hint">B2B Trade</span>
+                </button>
+                <button type="button" class="modal-role-card" data-target-role="Customer" data-url="customer.html">
+                    <i class="ph-bold ph-cooking-pot"></i>
+                    <span class="role-name">Customer</span>
+                    <span class="role-hint">Kitchen & Pantry</span>
+                </button>
+            </div>
+
+            <form class="login-form" id="loginForm">
+                <input type="hidden" id="selectedRoleInput" value="Farmer">
+                <div class="input-group">
+                    <label>Email / Phone</label>
+                    <input type="text" id="loginEmail" placeholder="farmer@forage.ag" value="farmer.demo@forage.ag">
+                </div>
+                <div class="input-group">
+                    <label>Access Code</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password-input" placeholder="••••••••" value="demo1234">
+                        <button type="button" class="toggle-password"><i class="ph ph-eye"></i></button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary full-width" id="modalSubmitBtn">
+                    <span>Enter Dashboard</span> &rarr;
+                </button>
+                <div class="modal-divider"><span>OR QUICK ACCESS</span></div>
+                <div class="quick-demo-links">
+                    <a href="farmer.html" class="quick-demo-btn"><i class="ph ph-tractor"></i> Demo Farmer</a>
+                    <a href="shopkeeper.html" class="quick-demo-btn"><i class="ph ph-storefront"></i> Demo Shopkeeper</a>
+                    <a href="customer.html" class="quick-demo-btn"><i class="ph ph-cooking-pot"></i> Demo Customer</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Functionality simulated for frontend demo.</div>
+
+    <script src="script.js"></script>
+    <script src="gl.js"></script>
+</body>
+</html>

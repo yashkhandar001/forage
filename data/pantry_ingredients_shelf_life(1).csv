@@ -1,0 +1,31 @@
+record_id,ingredient,quantity,unit,storage_condition,expected_shelf_life_days,remaining_shelf_life_days
+PI001,Rice,1.49,kg,Dry,125,9
+PI002,Wheat Flour,6.35,kg,Dry,150,146
+PI003,Lentils,8.89,kg,Dry,156,11
+PI004,Potato,1.69,kg,Cool/Dry,347,337
+PI005,Onion,8.7,kg,Cool/Dry,328,162
+PI006,Tomato,3.46,kg,Refrigerated,11,6
+PI007,Milk,4.35,litre,Refrigerated,4,2
+PI008,Paneer,9.86,kg,Refrigerated,8,8
+PI009,Bread,13.97,kg,Room Temperature,12,2
+PI010,Eggs,7.15,kg,Refrigerated,7,5
+PI011,Carrot,1.56,kg,Refrigerated,8,4
+PI012,Spinach,4.35,kg,Refrigerated,7,3
+PI013,Cooking Oil,13.25,litre,Dry,65,48
+PI014,Sugar,2.79,kg,Dry,175,140
+PI015,Chickpeas,9.37,kg,Dry,184,168
+PI016,Rice,0.61,kg,Dry,300,284
+PI017,Wheat Flour,14.01,kg,Dry,183,27
+PI018,Lentils,4.33,kg,Dry,98,14
+PI019,Potato,2.75,kg,Cool/Dry,313,145
+PI020,Onion,3.55,kg,Cool/Dry,339,176
+PI021,Tomato,10.47,kg,Refrigerated,10,5
+PI022,Milk,7.58,litre,Refrigerated,7,7
+PI023,Paneer,1.84,kg,Refrigerated,3,2
+PI024,Bread,4.51,kg,Room Temperature,20,1
+PI025,Eggs,11.68,kg,Refrigerated,12,11
+PI026,Carrot,2.84,kg,Refrigerated,11,8
+PI027,Spinach,10.73,kg,Refrigerated,7,5
+PI028,Cooking Oil,2.12,litre,Dry,34,10
+PI029,Sugar,1.02,kg,Dry,309,190
+PI030,Chickpeas,8.51,kg,Dry,328,221

@@ -1,0 +1,31 @@
+record_id,harvest_date,region,crop,avg_temperature_c,humidity_pct,rainfall_mm,soil_ph,yield_tonnes
+CH001,2026-01-01,Maharashtra,Tomato,30.2,46,13.3,6.11,2.97
+CH002,2026-01-05,Gujarat,Potato,21.6,79,1.6,6.55,1.81
+CH003,2026-01-09,Karnataka,Onion,23.5,77,10.8,6.9,9.02
+CH004,2026-01-13,Punjab,Carrot,31.2,71,4.0,6.97,10.0
+CH005,2026-01-17,Uttar Pradesh,Spinach,20.1,55,12.6,6.35,3.13
+CH006,2026-01-21,Madhya Pradesh,Mango,35.3,66,1.8,6.45,5.27
+CH007,2026-01-25,Maharashtra,Banana,25.5,61,14.5,7.32,7.13
+CH008,2026-01-29,Gujarat,Apple,35.6,69,1.4,6.23,8.1
+CH009,2026-02-02,Karnataka,Cabbage,34.2,68,10.4,7.26,1.98
+CH010,2026-02-06,Punjab,Cauliflower,23.6,63,17.7,7.64,10.6
+CH011,2026-02-10,Uttar Pradesh,Tomato,26.1,74,11.4,6.41,5.39
+CH012,2026-02-14,Madhya Pradesh,Potato,23.4,62,12.6,7.21,2.25
+CH013,2026-02-18,Maharashtra,Onion,30.2,79,13.1,5.91,5.48
+CH014,2026-02-22,Gujarat,Carrot,35.8,85,12.4,6.05,4.9
+CH015,2026-02-26,Karnataka,Spinach,32.3,48,4.1,5.58,4.81
+CH016,2026-03-02,Punjab,Mango,24.3,58,16.4,6.92,9.04
+CH017,2026-03-06,Uttar Pradesh,Banana,23.4,76,7.1,7.79,6.32
+CH018,2026-03-10,Madhya Pradesh,Apple,24.2,60,13.4,6.85,9.34
+CH019,2026-03-14,Maharashtra,Cabbage,26.9,82,7.2,6.05,11.97
+CH020,2026-03-18,Gujarat,Cauliflower,28.2,50,13.6,7.65,3.1
+CH021,2026-03-22,Karnataka,Tomato,22.6,72,10.7,6.46,7.76
+CH022,2026-03-26,Punjab,Potato,27.5,61,17.5,7.65,1.62
+CH023,2026-03-30,Uttar Pradesh,Onion,31.5,79,13.5,7.42,5.07
+CH024,2026-04-03,Madhya Pradesh,Carrot,24.7,55,8.2,7.88,10.7
+CH025,2026-04-07,Maharashtra,Spinach,24.2,77,13.7,6.77,2.62
+CH026,2026-04-11,Gujarat,Mango,30.0,85,9.1,6.0,5.43
+CH027,2026-04-15,Karnataka,Banana,22.6,78,16.5,7.0,6.63
+CH028,2026-04-19,Punjab,Apple,21.8,68,15.8,7.58,4.73
+CH029,2026-04-23,Uttar Pradesh,Cabbage,20.9,81,17.0,5.71,6.6
+CH030,2026-04-27,Madhya Pradesh,Cauliflower,21.1,79,13.8,5.82,6.49

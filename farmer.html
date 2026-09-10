@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forage | Farmer Agricultural Command Center</title>
+    <link rel="stylesheet" href="farmer.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="farmer-body">
+
+    <!-- GLSL BACKGROUND CANVAS -->
+    <canvas id="gl-canvas"></canvas>
+
+    <!-- TOP HARVEST STATUS BAR -->
+    <div class="farmer-top-strip">
+        <div class="strip-content">
+            <span class="mandi-dot"></span>
+            <span><strong>FARM COMMAND ONLINE:</strong> Nashik APMC Yard Rate: Tomatoes <span class="rate-up">&#9650; +8.4%</span> • Soil Moisture Index: <strong>68% Optimal</strong> • Reefer Transport Link: Active</span>
+        </div>
+        <div class="strip-portals">
+            <a href="index.html" class="strip-link"><i class="ph ph-arrow-left"></i> Home</a>
+            <a href="shopkeeper.html" class="strip-link"><i class="ph ph-storefront"></i> Shopkeeper Hub</a>
+            <a href="customer.html" class="strip-link"><i class="ph ph-cooking-pot"></i> Consumer Kitchen</a>
+        </div>
+    </div>
+
+    <!-- MAIN APP LAYOUT -->
+    <div class="command-layout">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <span class="brand-text">Forage.</span>
+                    <span class="role-badge">PRODUCER COMMAND</span>
+                </div>
+                <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+
+            <div class="farmer-profile-card">
+                <div class="farmer-avatar">
+                    <i class="ph-duotone ph-tractor"></i>
+                </div>
+                <div class="farmer-info">
+                    <span class="farmer-name">Ramesh Patil</span>
+                    <span class="farmer-meta">Patil Agro Farms • Nashik (12 Acres)</span>
+                </div>
+            </div>
+
+            <!-- SPA NAVIGATION TABS -->
+            <nav class="sidebar-nav">
+                <div class="nav-category">OPERATIONS</div>
+                <button type="button" class="nav-tab-btn active" data-tab="dashboard">
+                    <i class="ph-bold ph-chart-line-up"></i>
+                    <span>Dashboard Overview</span>
+                </button>
+                <button type="button" class="nav-tab-btn" data-tab="crops">
+                    <i class="ph-bold ph-plant"></i>
+                    <span>Crop Management</span>
+                    <span class="nav-badge" id="sidebarCropsCount">4</span>
+                </button>
+                <button type="button" class="nav-tab-btn" data-tab="orders">
+                    <i class="ph-bold ph-shopping-cart"></i>
+                    <span>Order Management</span>
+                    <span class="nav-pill-amber" id="sidebarPendingOrders">2 New</span>
+                </button>
+                <button type="button" class="nav-tab-btn" data-tab="inventory">
+                    <i class="ph-bold ph-chart-bar-horizontal"></i>
+                    <span>Inventory Visualizer</span>
+                </button>
+
+                <div class="nav-category">MARKET INTELLIGENCE</div>
+                <button type="button" class="nav-tab-btn" data-tab="intelligence">
+                    <i class="ph-bold ph-sparkle"></i>
+                    <span>Market Intelligence & AI</span>
+                    <span class="ai-glow-tag">AI LIVE</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="weather-widget-mini">
+                    <i class="ph-fill ph-sun-dim"></i>
+                    <div>
+                        <span class="w-temp">Nashik: 30.2°C, 46% Hum</span>
+                        <span class="w-cond">Optimal Harvesting Window</span>
+                    </div>
+                </div>
+                <a href="index.html" class="switch-link"><i class="ph ph-sign-out"></i> Switch Persona</a>
+            </div>
+        </aside>
+
+        <!-- MAIN VIEW CONTAINER -->
+        <main class="main-content">
+            
+            <!-- TOP BAR -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button type="button" class="hamburger-btn" id="sidebarToggleBtn" aria-label="Toggle navigation">
+                        <i class="ph-bold ph-list"></i>
+                    </button>
+                    <div class="title-group">
+                        <h1 id="pageTitle">Agricultural Command Center</h1>
+                        <p id="pageSubtitle">Run your entire farming business, active harvest listings, and shopkeeper orders in one place.</p>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button type="button" class="btn-add-crop-top" id="topAddCropBtn">
+                        <i class="ph-bold ph-plus-circle"></i> + Add New Crop Listing
+                    </button>
+                </div>
+            </header>
+
+            <!-- ==================================================== -->
+            <!-- SECTION 1: DASHBOARD OVERVIEW -->
+            <!-- ==================================================== -->
+            <section id="tab-dashboard" class="spa-tab active">
+                <!-- 4 KEY METRIC CARDS -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-top">
+                            <span class="kpi-title">Total Gross Revenue</span>
+                            <div class="kpi-icon emerald"><i class="ph-bold ph-currency-inr"></i></div>
+                        </div>
+                        <div class="kpi-num">₹3,42,800</div>
+                        <div class="kpi-trend up">
+                            <i class="ph-bold ph-arrow-up-right"></i>
+                            <span>+18.2% vs previous harvest season</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-top">
+                            <span class="kpi-title">Active B2B Orders</span>
+                            <div class="kpi-icon blue"><i class="ph-bold ph-shopping-bag"></i></div>
+                        </div>
+                        <div class="kpi-num">18 <span class="unit">Batches</span></div>
+                        <div class="kpi-trend neutral">
+                            <span>2 Pending Acceptance • 16 Active</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-top">
+                            <span class="kpi-title">Inventory Volume</span>
+                            <div class="kpi-icon amber"><i class="ph-bold ph-scales"></i></div>
+                        </div>
+                        <div class="kpi-num">14.2 <span class="unit">Tonnes</span></div>
+                        <div class="kpi-trend neutral">
+                            <span>82% of storage capacity utilized</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-top">
+                            <span class="kpi-title">Avg. Market Price</span>
+                            <div class="kpi-icon purple"><i class="ph-bold ph-trend-up"></i></div>
+                        </div>
+                        <div class="kpi-num">₹34.80 <span class="unit">/ kg</span></div>
+                        <div class="kpi-trend up">
+                            <i class="ph-bold ph-arrow-up-right"></i>
+                            <span>+6.2% above Mandi minimum support</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SALES OVERVIEW LINE CHART (VANILLA CANVAS / NO CHART.JS!) -->
+                <div class="dash-card mt-3">
+                    <div class="dash-card-header">
+                        <div class="title-block">
+                            <h3><i class="ph-bold ph-chart-line"></i> Sales Overview & Revenue Trajectory</h3>
+                            <p>Monthly farm-gate sales revenue rendered live via lightweight Vanilla HTML5 Canvas (Zero External Dependencies)</p>
+                        </div>
+                        <div class="chart-controls">
+                            <button type="button" class="chart-filter-btn active" data-period="6m">Last 6 Months</button>
+                            <button type="button" class="chart-filter-btn" data-period="1y">1 Year Trajectory</button>
+                        </div>
+                    </div>
+                    <div class="canvas-chart-wrapper">
+                        <canvas id="salesCanvas" width="950" height="300"></canvas>
+                        <div id="chartTooltip" class="chart-tooltip"></div>
+                    </div>
+                    <div class="chart-legend-row">
+                        <div class="legend-item"><span class="dot-legend sales"></span> Monthly Sales Revenue (₹)</div>
+                        <div class="legend-item"><span class="dot-legend target"></span> Target Capacity Revenue</div>
+                    </div>
+                </div>
+
+                <!-- DASHBOARD LOWER SPLIT: RECENT ORDERS & FORAGE AI ADVICE -->
+                <div class="overview-lower-grid mt-4">
+                    <!-- Recent Orders preview -->
+                    <div class="dash-card">
+                        <div class="dash-card-header">
+                            <div class="title-block">
+                                <h3><i class="ph-bold ph-clock-countdown"></i> Urgent Shopkeeper Orders</h3>
+                                <p>Action required: Accept or reject incoming procurement bids</p>
+                            </div>
+                            <button type="button" class="btn-text-action" onclick="switchTab('orders')">View All &rarr;</button>
+                        </div>
+                        <div class="quick-orders-list" id="quickOrdersList">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Market Momentum Mini AI Widget -->
+                    <div class="dash-card ai-insight-panel">
+                        <div class="dash-card-header">
+                            <div class="title-block">
+                                <h3><i class="ph-fill ph-sparkle"></i> Forage AI Agricultural Advisor</h3>
+                                <p>Actionable intelligence grounded in 2026 APMC price shifts</p>
+                            </div>
+                            <button type="button" class="btn-text-action" onclick="switchTab('intelligence')">Full AI Desk &rarr;</button>
+                        </div>
+                        <div class="ai-bullet-cards">
+                            <div class="ai-card-bullet alert">
+                                <span class="ai-tag red">PRICING ALERT</span>
+                                <p><strong>Tomato prices jumped +8.4% today in Vashi market!</strong> Current listing is ₹27.45/kg. Consider increasing your listing price to <strong>₹30.50/kg</strong> to capture current demand.</p>
+                            </div>
+                            <div class="ai-card-bullet opportunity">
+                                <span class="ai-tag green">WEATHER ADVISORY</span>
+                                <p><strong>Nashik weather:</strong> Moderate dry spell expected for 4 days (30°C). Perfect window to accelerate onion harvesting before humid spell on Tuesday.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================================== -->
+            <!-- SECTION 2: CROP MANAGEMENT ("MY CROPS") -->
+            <!-- ==================================================== -->
+            <section id="tab-crops" class="spa-tab">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="title-block">
+                            <h3><i class="ph-bold ph-plant"></i> Active Crop Harvest Listings</h3>
+                            <p>Manage your harvest inventory, unit prices, and certified listings visible to wholesale shopkeepers.</p>
+                        </div>
+                        <button type="button" class="btn-primary-action" id="openAddCropModalBtn">
+                            <i class="ph-bold ph-plus"></i> Add New Crop Listing
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table" id="cropsTable">
+                            <thead>
+                                <tr>
+                                    <th>Crop Name</th>
+                                    <th>Category</th>
+                                    <th>Available Quantity</th>
+                                    <th>Farm-Gate Price</th>
+                                    <th>Harvest Date</th>
+                                    <th>Storage Location</th>
+                                    <th>Listing Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cropsTableBody">
+                                <!-- Populated dynamically from farmerCrops array -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================================== -->
+            <!-- SECTION 3: ORDER MANAGEMENT -->
+            <!-- ==================================================== -->
+            <section id="tab-orders" class="spa-tab">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="title-block">
+                            <h3><i class="ph-bold ph-package"></i> Incoming Wholesale Orders from Shopkeepers</h3>
+                            <p>Review bulk purchase contracts, accept lots for harvest packaging, or mark completed.</p>
+                        </div>
+                        <div class="order-filter-tabs">
+                            <button type="button" class="o-tab-btn active" data-filter="all">All Orders (<span id="totalOrdersTabCount">5</span>)</button>
+                            <button type="button" class="o-tab-btn" data-filter="Pending">Pending Action</button>
+                            <button type="button" class="o-tab-btn" data-filter="Accepted">Accepted & Packing</button>
+                            <button type="button" class="o-tab-btn" data-filter="Completed">Completed</button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table" id="farmerOrdersTable">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Buyer Shopkeeper</th>
+                                    <th>Crop Requested</th>
+                                    <th>Quantity</th>
+                                    <th>Contract Value</th>
+                                    <th>Delivery Corridor</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="farmerOrdersTableBody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================================== -->
+            <!-- SECTION 4: INVENTORY VISUALIZER -->
+            <!-- ==================================================== -->
+            <section id="tab-inventory" class="spa-tab">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="title-block">
+                            <h3><i class="ph-bold ph-chart-bar-horizontal"></i> Warehouse Capacity & Volume Visualizer</h3>
+                            <p>Visual capacity progress bars showing remaining warehouse volume and batch utilization.</p>
+                        </div>
+                        <div class="total-capacity-chip">
+                            <i class="ph-fill ph-warehouse"></i>
+                            <span>Total Silo Capacity: <strong>20,000 kg</strong> (14,200 kg used)</span>
+                        </div>
+                    </div>
+
+                    <!-- CAPACITY PROGRESS BARS GRID -->
+                    <div class="capacity-bars-grid" id="capacityBarsGrid">
+                        <!-- Populated dynamically: e.g. "Tomatoes: 850kg / 1000kg - 85% Full" -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================================================== -->
+            <!-- SECTION 5: MARKET INTELLIGENCE & AI DESK -->
+            <!-- ==================================================== -->
+            <section id="tab-intelligence" class="spa-tab">
+                <div class="intelligence-layout">
+                    <!-- Left: Today's Mandi Prices with Up/Down Arrows -->
+                    <div class="mandi-ticker-card dash-card">
+                        <div class="dash-card-header">
+                            <div class="title-block">
+                                <h3><i class="ph-bold ph-trend-up"></i> Today's Mandi Wholesale Price Index</h3>
+                                <p>Live benchmark prices from APMC Vashi, Pune, and Nashik markets</p>
+                            </div>
+                        </div>
+                        <div class="mandi-prices-list" id="mandiPricesList">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Right: Forage AI Assistant Chat Box -->
+                    <div class="dash-card ai-chat-desk">
+                        <div class="ai-desk-header">
+                            <div class="ai-avatar-box">
+                                <i class="ph-fill ph-sparkle"></i>
+                            </div>
+                            <div>
+                                <h4>Forage Agri-AI Advisor</h4>
+                                <span class="desk-status"><span class="dot-online"></span> Real-time Mandi Model Active</span>
+                            </div>
+                        </div>
+
+                        <!-- Prompt hints -->
+                        <div class="farmer-prompts-bar">
+                            <button type="button" class="f-prompt-chip" data-prompt="Should I increase my tomato listing price today?">
+                                <i class="ph ph-currency-inr"></i> Should I increase Tomato price?
+                            </button>
+                            <button type="button" class="f-prompt-chip" data-prompt="What is the 7-day price forecast for onions?">
+                                <i class="ph ph-chart-line-up"></i> Onion 7-day price outlook?
+                            </button>
+                            <button type="button" class="f-prompt-chip" data-prompt="When is the best time to harvest my potatoes?">
+                                <i class="ph ph-calendar-check"></i> Best harvest timing for potatoes?
+                            </button>
+                        </div>
+
+                        <!-- Chat stream -->
+                        <div class="ai-chat-body" id="farmerChatBody">
+                            <div class="ai-msg-bubble assistant">
+                                <div class="ai-bubble-avatar"><i class="ph-fill ph-sparkle"></i></div>
+                                <div class="ai-bubble-text">
+                                    <p>Namaste Ramesh ji! I am your <strong>Forage Agricultural AI Advisor</strong>. I track APMC arrivals, weather patterns, and wholesale demand so you can price your harvests for maximum profit.</p>
+                                    <div class="actionable-box">
+                                        <strong>Today's Top Action:</strong> Tomato prices jumped <strong>8.4% today</strong> in Mumbai and Pune. Consider adjusting your listing price up from ₹27.45/kg to <strong>₹30.50/kg</strong>.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat input -->
+                        <form class="ai-chat-input-bar" id="farmerChatForm">
+                            <input type="text" id="farmerChatInput" placeholder="Ask AI: e.g. 'How much should I price my onions?', 'Weather warning?'..." autocomplete="off">
+                            <button type="submit" class="ai-send-btn" aria-label="Send">
+                                <i class="ph-bold ph-paper-plane-right"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ADD CROP MODAL -->
+    <div class="modal-overlay" id="addCropModal">
+        <div class="modal-container">
+            <button type="button" class="close-modal" id="closeAddCropModal"><i class="ph ph-x"></i></button>
+            <div class="modal-header">
+                <div class="modal-icon-badge"><i class="ph-bold ph-plant"></i></div>
+                <h3>Add New Crop Listing</h3>
+                <p>List a new harvest batch to make it available to wholesale buyers.</p>
+            </div>
+            <form id="addCropForm">
+                <div class="input-row-2">
+                    <div class="input-group">
+                        <label>Crop Name</label>
+                        <input type="text" id="newCropName" placeholder="e.g. Red Tomatoes, Sweet Corn" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Category</label>
+                        <select id="newCropCategory" required>
+                            <option value="Vegetables">Vegetables</option>
+                            <option value="Grains">Grains & Pulses</option>
+                            <option value="Fruits">Fruits</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-row-2">
+                    <div class="input-group">
+                        <label>Quantity</label>
+                        <input type="number" id="newCropQty" min="10" placeholder="e.g. 500" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Unit</label>
+                        <select id="newCropUnit">
+                            <option value="kg">Kilograms (kg)</option>
+                            <option value="tonnes">Tonnes (T)</option>
+                            <option value="crates">Crates (25kg)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-row-2">
+                    <div class="input-group">
+                        <label>Farm-Gate Price (₹ per unit)</label>
+                        <input type="number" step="0.5" id="newCropPrice" placeholder="e.g. 32.00" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Harvest Date</label>
+                        <input type="date" id="newCropHarvestDate" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Storage / Silo Location</label>
+                    <input type="text" id="newCropLocation" placeholder="e.g. Patil Farm Silo #2, Nashik" value="Patil Farm Cold Storage #1">
+                </div>
+
+                <button type="submit" class="btn-primary-action full-width" id="submitCropBtn">
+                    Publish Listing to B2B Market &rarr;
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ORDER DETAILS DRAWER / MODAL -->
+    <div class="modal-overlay" id="orderDrawerModal">
+        <div class="modal-container drawer-style">
+            <button type="button" class="close-modal" id="closeOrderDrawer"><i class="ph ph-x"></i></button>
+            <div class="modal-header">
+                <div class="modal-icon-badge blue"><i class="ph-bold ph-receipt"></i></div>
+                <h3 id="drawerOrderId">Order Details</h3>
+                <p id="drawerShopkeeper">Buyer Contract Review</p>
+            </div>
+            
+            <div class="drawer-body">
+                <div class="detail-tile">
+                    <span class="d-label">Crop Requested:</span>
+                    <strong class="d-val" id="drawerCrop">Tomatoes (Roma Grade-A)</strong>
+                </div>
+                <div class="detail-tile">
+                    <span class="d-label">Order Volume:</span>
+                    <span class="d-val" id="drawerQty">250 kg</span>
+                </div>
+                <div class="detail-tile">
+                    <span class="d-label">Total Contract Value:</span>
+                    <strong class="d-val highlight" id="drawerAmount">₹8,000</strong>
+                </div>
+                <div class="detail-tile">
+                    <span class="d-label">Delivery Corridor:</span>
+                    <span class="d-val" id="drawerRoute">Nashik to Vashi APMC (Reefer Truck)</span>
+                </div>
+                <div class="detail-tile">
+                    <span class="d-label">Current Status:</span>
+                    <span class="d-val" id="drawerStatusBadge">Pending Farmer Confirmation</span>
+                </div>
+            </div>
+
+            <!-- ACTIONS: ACCEPT, REJECT, MARK COMPLETED -->
+            <div class="drawer-actions-row" id="drawerActionsRow">
+                <button type="button" class="btn-drawer accept" id="drawerAcceptBtn">
+                    <i class="ph-bold ph-check"></i> Accept Order
+                </button>
+                <button type="button" class="btn-drawer complete" id="drawerCompleteBtn">
+                    <i class="ph-bold ph-seal-check"></i> Mark Completed
+                </button>
+                <button type="button" class="btn-drawer reject" id="drawerRejectBtn">
+                    <i class="ph-bold ph-x"></i> Reject
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">Crop listing added successfully!</div>
+
+    <script src="gl.js"></script>
+    <script src="farmer.js"></script>
+</body>
+</html>

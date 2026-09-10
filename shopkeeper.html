@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forage | Shopkeeper & Middleman B2B Hub</title>
+    <link rel="stylesheet" href="shopkeeper.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="dashboard-body">
+
+    <!-- GLSL BACKGROUND CANVAS -->
+    <canvas id="gl-canvas"></canvas>
+
+    <!-- TOP TELEMETRY ALERT BAR -->
+    <div class="telemetry-bar">
+        <div class="telemetry-content">
+            <span class="pulse-indicator"></span>
+            <span class="telemetry-text"><strong>LIVE TELEMETRY:</strong> Active Fleet: 4 Trucks in Transit • Degradation Risk: <span class="badge-safe">LOW (3.2% avg)</span> • Mandi Index: <span class="badge-accent">+4.8%</span></span>
+        </div>
+        <div class="telemetry-links">
+            <a href="index.html" class="hub-back-btn"><i class="ph ph-arrow-left"></i> Main Site</a>
+            <a href="farmer.html" class="hub-pill"><i class="ph ph-tractor"></i> Farmer Hub</a>
+            <a href="customer.html" class="hub-pill"><i class="ph ph-cooking-pot"></i> Consumer Kitchen</a>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD WRAPPER -->
+    <div class="dashboard-layout">
+        
+        <!-- COLLAPSIBLE SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <span class="brand-text">Forage.</span>
+                    <span class="role-badge">B2B TRADE HUB</span>
+                </div>
+                <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+
+            <div class="shopkeeper-profile">
+                <div class="profile-avatar">
+                    <i class="ph-duotone ph-storefront"></i>
+                </div>
+                <div class="profile-info">
+                    <span class="profile-name">Apex Agri-Wholesale</span>
+                    <span class="profile-sub">APMC Yard, Vashi • Lic #MH-4821</span>
+                </div>
+            </div>
+
+            <!-- NAVIGATION TABS (SPA) -->
+            <nav class="sidebar-nav">
+                <div class="nav-category">CORE TRADING</div>
+                <button type="button" class="nav-item active" data-tab="overview">
+                    <i class="ph-bold ph-squares-four"></i>
+                    <span>Overview</span>
+                </button>
+                <button type="button" class="nav-item" data-tab="procurement">
+                    <i class="ph-bold ph-shopping-bag-open"></i>
+                    <span>Procurement Market</span>
+                    <span class="nav-count" id="marketCropsCount">12</span>
+                </button>
+                <button type="button" class="nav-item" data-tab="orders">
+                    <i class="ph-bold ph-package"></i>
+                    <span>Active Orders & Tracking</span>
+                    <span class="nav-pill" id="inTransitBadge">3 Transit</span>
+                </button>
+
+                <div class="nav-category">ANALYTICS & AI</div>
+                <button type="button" class="nav-item" data-tab="transit-monitor">
+                    <i class="ph-bold ph-heartbeat"></i>
+                    <span>Transit Health Monitor</span>
+                </button>
+                <button type="button" class="nav-item" data-tab="profit-analytics">
+                    <i class="ph-bold ph-chart-line-up"></i>
+                    <span>Profit Margin Analytics</span>
+                </button>
+                <button type="button" class="nav-item" data-tab="ai-forecasting">
+                    <i class="ph-bold ph-sparkle"></i>
+                    <span>AI Demand Forecasting</span>
+                    <span class="ai-spark-tag">NEW</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="network-status">
+                    <span class="dot-online"></span>
+                    <span>Cold Chain Connected (IoT v2.4)</span>
+                </div>
+                <a href="index.html" class="logout-link"><i class="ph ph-sign-out"></i> Switch Persona</a>
+            </div>
+        </aside>
+
+        <!-- MAIN VIEW AREA -->
+        <main class="main-content">
+            
+            <!-- TOP BAR -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button type="button" class="hamburger-btn" id="sidebarToggleBtn" aria-label="Toggle Sidebar">
+                        <i class="ph-bold ph-list"></i>
+                    </button>
+                    <div class="page-title-block">
+                        <h1 id="pageTitle">Middleman & B2B Trading Dashboard</h1>
+                        <p id="pageSubtitle">Source bulk farm harvests, track cold-chain degradation & audit transparent retail margins.</p>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-search">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <input type="text" id="quickSearchInput" placeholder="Search orders, farmers, routes...">
+                    </div>
+                    <div class="topbar-actions">
+                        <button type="button" class="icon-btn" id="refreshBtn" title="Refresh Live Data">
+                            <i class="ph ph-arrows-clockwise"></i>
+                        </button>
+                        <button type="button" class="btn-primary-sm open-procure-quick">
+                            <i class="ph-bold ph-plus"></i> Bulk Order
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- SECTION 1: OVERVIEW TAB -->
+            <section id="tab-overview" class="spa-tab active">
+                <!-- 4 METRIC CARDS -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Monthly Bulk Sourced</span>
+                            <div class="kpi-icon emerald"><i class="ph-bold ph-truck"></i></div>
+                        </div>
+                        <div class="kpi-value">48.6 <span class="unit">Tonnes</span></div>
+                        <div class="kpi-footer positive">
+                            <i class="ph-bold ph-trend-up"></i>
+                            <span>+12.4% vs last month</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Active Bulk Orders</span>
+                            <div class="kpi-icon blue"><i class="ph-bold ph-package"></i></div>
+                        </div>
+                        <div class="kpi-value">8 <span class="unit">Batches</span></div>
+                        <div class="kpi-footer neutral">
+                            <span>3 In Transit • 2 Dispatched • 3 Pending</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Avg. Transit Health</span>
+                            <div class="kpi-icon amber"><i class="ph-bold ph-shield-check"></i></div>
+                        </div>
+                        <div class="kpi-value">87.2% <span class="unit">Freshness</span></div>
+                        <div class="kpi-footer positive">
+                            <i class="ph-bold ph-check-circle"></i>
+                            <span>Degradation: -2.8% (Target &lt; 5%)</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Realized Trading Margin</span>
+                            <div class="kpi-icon purple"><i class="ph-bold ph-currency-inr"></i></div>
+                        </div>
+                        <div class="kpi-value">22.4% <span class="unit">Net</span></div>
+                        <div class="kpi-footer positive">
+                            <i class="ph-bold ph-trend-up"></i>
+                            <span>Transparent mark-up verified</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OVERVIEW SPLIT CARDS -->
+                <div class="overview-split-grid">
+                    <!-- Left: Recent Transit Shipments -->
+                    <div class="dash-card">
+                        <div class="dash-card-header">
+                            <div class="title-wrap">
+                                <h3><i class="ph-bold ph-truck"></i> Real-Time Transit Health Tracker</h3>
+                                <p>Live cold-chain telemetry across agricultural corridors</p>
+                            </div>
+                            <button type="button" class="btn-text-sm" onclick="switchTab('transit-monitor')">Full Monitor &rarr;</button>
+                        </div>
+                        <div class="transit-quick-list" id="quickTransitList">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Right: AI Demand Forecast Widget Preview -->
+                    <div class="dash-card ai-summary-card">
+                        <div class="dash-card-header">
+                            <div class="title-wrap">
+                                <h3><i class="ph-fill ph-sparkle"></i> Forage B2B Demand Radar</h3>
+                                <p>Predictive buying signals based on mandi arrival flows</p>
+                            </div>
+                            <button type="button" class="btn-text-sm" onclick="switchTab('ai-forecasting')">Open AI Chat &rarr;</button>
+                        </div>
+                        <div class="ai-quick-bullet-list">
+                            <div class="ai-signal-item alert">
+                                <span class="signal-tag red">SPIKE ALERT</span>
+                                <div class="signal-text">
+                                    <strong>Nashik Onions:</strong> Supply constrained by unseasonal rains. Wholesale prices projected to rise <strong>+14% by Tuesday</strong>. Recommended bulk procurement now.
+                                </div>
+                            </div>
+                            <div class="ai-signal-item opportunity">
+                                <span class="signal-tag green">MARGIN OPPORTUNITY</span>
+                                <div class="signal-text">
+                                    <strong>Pune Tomatoes:</strong> Excess harvest arriving. Farm-gate rate dropped to <strong>₹27.45/kg</strong> with retail stable at ₹45.19/kg (Gross margin ~39%).
+                                </div>
+                            </div>
+                            <div class="ai-signal-item warning">
+                                <span class="signal-tag amber">TRANSIT NOTICE</span>
+                                <div class="signal-text">
+                                    <strong>Ahmedabad Corridor:</strong> Daytime temperatures exceeding 36°C. Ensure refrigerated reefer dispatch for perishable greens.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUICK PROCUREMENT PREVIEW -->
+                <div class="dash-card mt-4">
+                    <div class="dash-card-header">
+                        <div class="title-wrap">
+                            <h3><i class="ph-bold ph-storefront"></i> Recommended Farmer Harvests for Bulk Procurement</h3>
+                            <p>Direct farm-gate listings with verified yield certificates</p>
+                        </div>
+                        <button type="button" class="btn-secondary-sm" onclick="switchTab('procurement')">Browse All Listings &rarr;</button>
+                    </div>
+                    <div class="market-cards-grid" id="overviewProcureGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: THE PROCUREMENT MARKET -->
+            <section id="tab-procurement" class="spa-tab">
+                <div class="section-top-controls">
+                    <div class="filter-pills-row" id="cropTypeFilters">
+                        <button type="button" class="filter-chip active" data-filter="all">All Crops</button>
+                        <button type="button" class="filter-chip" data-filter="Vegetables">Vegetables</button>
+                        <button type="button" class="filter-chip" data-filter="Grains">Grains & Pulses</button>
+                        <button type="button" class="filter-chip" data-filter="Fruits">Fruits</button>
+                    </div>
+                    <div class="dropdown-filters-group">
+                        <div class="select-wrapper">
+                            <i class="ph ph-map-pin"></i>
+                            <select id="locationFilter">
+                                <option value="all">All Locations</option>
+                                <option value="Nashik">Nashik, MH</option>
+                                <option value="Pune">Pune, MH</option>
+                                <option value="Ahmedabad">Ahmedabad, GJ</option>
+                                <option value="Bengaluru">Bengaluru, KA</option>
+                                <option value="Punjab">Ludhiana, PB</option>
+                            </select>
+                        </div>
+                        <div class="select-wrapper">
+                            <i class="ph ph-arrows-down-up"></i>
+                            <select id="priceSortFilter">
+                                <option value="price-asc">Price: Low to High</option>
+                                <option value="price-desc">Price: High to Low</option>
+                                <option value="qty-desc">Quantity: High to Low</option>
+                                <option value="fresh-desc">Freshness/Harvest Date</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B2B MARKET CARDS GRID -->
+                <div class="b2b-market-grid" id="b2bMarketGrid">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- EMPTY STATE -->
+                <div class="empty-state hidden" id="marketEmptyState">
+                    <div class="empty-icon"><i class="ph-duotone ph-magnifying-glass"></i></div>
+                    <h3>No Harvest Listings Found</h3>
+                    <p>Try resetting the crop category or location filter to see more results.</p>
+                    <button type="button" class="btn-primary-sm" onclick="resetMarketFilters()">Reset All Filters</button>
+                </div>
+            </section>
+
+            <!-- SECTION 3: ACTIVE ORDERS / TRACKING -->
+            <section id="tab-orders" class="spa-tab">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="title-wrap">
+                            <h3><i class="ph-bold ph-receipt"></i> Placed Bulk Orders & Dispatch Tracking</h3>
+                            <p>Track shipments from farmer dispatch to warehouse delivery</p>
+                        </div>
+                        <div class="orders-filter-chips">
+                            <button type="button" class="tab-chip active" data-order-filter="all">All Orders (<span id="countAllOrders">6</span>)</button>
+                            <button type="button" class="tab-chip" data-order-filter="In Transit">In Transit</button>
+                            <button type="button" class="tab-chip" data-order-filter="Pending">Pending</button>
+                            <button type="button" class="tab-chip" data-order-filter="Delivered">Delivered</button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table" id="ordersTable">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Crop & Grade</th>
+                                    <th>Farmer Producer</th>
+                                    <th>Route & Transit</th>
+                                    <th>Quantity</th>
+                                    <th>Buy Value</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: TRANSIT HEALTH MONITOR -->
+            <section id="tab-transit-monitor" class="spa-tab">
+                <div class="monitor-hero-grid">
+                    <!-- Degradation Algorithm Live Model -->
+                    <div class="dash-card degradation-card">
+                        <div class="dash-card-header">
+                            <div class="title-wrap">
+                                <h3><i class="ph-bold ph-cpu"></i> Transit Degradation Algorithm</h3>
+                                <p>Live telemetry score modeled against temperature, vibration & time.</p>
+                            </div>
+                            <span class="badge-accent">AI MODEL ACTIVE</span>
+                        </div>
+                        <div class="degradation-hero-content">
+                            <div class="gauge-box">
+                                <svg class="gauge-svg" viewBox="0 0 200 120">
+                                    <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" />
+                                    <path class="gauge-fill" id="gaugePath" d="M 20 100 A 80 80 0 0 1 180 100" />
+                                </svg>
+                                <div class="gauge-center-text">
+                                    <span class="gauge-value" id="overallFreshnessScore">87.2%</span>
+                                    <span class="gauge-label">Freshness Index</span>
+                                </div>
+                            </div>
+                            <div class="degradation-factors">
+                                <div class="factor-row">
+                                    <span class="f-name"><i class="ph-bold ph-thermometer"></i> Ambient Temperature:</span>
+                                    <div class="f-bar-wrap">
+                                        <div class="f-bar" style="width: 42%; background: #10B981;"></div>
+                                    </div>
+                                    <span class="f-val">18.8°C <span class="status-ok">Optimal</span></span>
+                                </div>
+                                <div class="factor-row">
+                                    <span class="f-name"><i class="ph-bold ph-drop"></i> Relative Humidity:</span>
+                                    <div class="f-bar-wrap">
+                                        <div class="f-bar" style="width: 73%; background: #3B82F6;"></div>
+                                    </div>
+                                    <span class="f-val">73% <span class="status-ok">Controlled</span></span>
+                                </div>
+                                <div class="factor-row">
+                                    <span class="f-name"><i class="ph-bold ph-wave-sine"></i> Vibration Stress Index:</span>
+                                    <div class="f-bar-wrap">
+                                        <div class="f-bar" style="width: 35%; background: #F59E0B;"></div>
+                                    </div>
+                                    <span class="f-val">4.1 / 10 <span class="status-ok">Paved Highway</span></span>
+                                </div>
+                                <div class="factor-row">
+                                    <span class="f-name"><i class="ph-bold ph-clock"></i> Cumulative Transit Time:</span>
+                                    <div class="f-bar-wrap">
+                                        <div class="f-bar" style="width: 50%; background: #8B5CF6;"></div>
+                                    </div>
+                                    <span class="f-val">12 Hours <span class="status-ok">On Schedule</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Degradation telemetry explanation -->
+                    <div class="dash-card">
+                        <div class="dash-card-header">
+                            <div class="title-wrap">
+                                <h3><i class="ph-bold ph-shield-check"></i> Degradation Risk Breakdown</h3>
+                                <p>Estimated shelf-life retention upon warehouse arrival</p>
+                            </div>
+                        </div>
+                        <div class="risk-breakdown-list">
+                            <div class="risk-card-item good">
+                                <div class="risk-badge">87.2% Retained</div>
+                                <h4>Batch #TD001 • Tomatoes (Nashik &rarr; Mumbai)</h4>
+                                <p>Reefer truck #MH-15-AG-4911. Freshness decay estimated at only 8.55% over 12 hours. Produce expected to retain 9+ days shelf-life at retail.</p>
+                            </div>
+                            <div class="risk-card-item moderate">
+                                <div class="risk-badge warning">78.5% Retained</div>
+                                <h4>Batch #TD003 • Onions (Ahmedabad &rarr; Mumbai)</h4>
+                                <p>26 hours transit duration with ambient heat 33.6°C. Moisture condensation within safe envelope. Vibration damping active.</p>
+                            </div>
+                            <div class="risk-card-item good">
+                                <div class="risk-badge">83.5% Retained</div>
+                                <h4>Batch #TD004 • Carrots (Bengaluru &rarr; Mumbai)</h4>
+                                <p>Cold chain locked at 14°C throughout Karnataka-Maharashtra transit. Damage estimate: 10.9%.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LIVE TELEMETRY LOGS TABLE -->
+                <div class="dash-card mt-4">
+                    <div class="dash-card-header">
+                        <div class="title-wrap">
+                            <h3><i class="ph-bold ph-broadcast"></i> Cold-Chain Sensor Telemetry Logs</h3>
+                            <p>Real-time vehicle telemetry feeds directly streamed from IoT loggers</p>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Log ID</th>
+                                    <th>Route</th>
+                                    <th>Produce</th>
+                                    <th>Duration</th>
+                                    <th>Temp (°C)</th>
+                                    <th>Humidity (%)</th>
+                                    <th>Vibration Index</th>
+                                    <th>Est. Damage</th>
+                                    <th>Freshness Score</th>
+                                    <th>Condition</th>
+                                </tr>
+                            </thead>
+                            <tbody id="telemetryLogsBody">
+                                <!-- Populated dynamically from transit_degradation_logs.csv -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: PROFIT MARGIN ANALYTICS -->
+            <section id="tab-profit-analytics" class="spa-tab">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="title-wrap">
+                            <h3><i class="ph-bold ph-scales"></i> Supply Chain Price & Margin Transparency</h3>
+                            <p>Verifiable Buy Price (Farm-Gate) vs. Wholesale & Retail selling prices to enforce ethical markups.</p>
+                        </div>
+                        <div class="transparency-seal">
+                            <i class="ph-fill ph-check-shield"></i>
+                            <span>100% AUDITED SPREAD</span>
+                        </div>
+                    </div>
+
+                    <!-- Margin Cards Comparison Grid -->
+                    <div class="margin-cards-grid" id="marginCardsGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Transparent Cost Breakdown Explainer -->
+                <div class="overview-split-grid mt-4">
+                    <div class="dash-card">
+                        <div class="dash-card-header">
+                            <div class="title-wrap">
+                                <h3><i class="ph-bold ph-pie-chart"></i> Value Distribution Breakdown</h3>
+                                <p>Where does each rupee go from soil to consumer?</p>
+                            </div>
+                        </div>
+                        <div class="distribution-bars">
+                            <div class="dist-item">
+                                <div class="dist-header">
+                                    <span>Farmer Producer Share</span>
+                                    <span class="dist-pct">60.8%</span>
+                                </div>
+                                <div class="dist-bar-track">
+                                    <div class="dist-bar-fill farmer" style="width: 60.8%;"></div>
+                                </div>
+                                <span class="dist-desc">Direct harvest payment received by the grower.</span>
+                            </div>
+                            <div class="dist-item">
+                                <div class="dist-header">
+                                    <span>Cold Chain & Transport Logistics</span>
+                                    <span class="dist-pct">14.6%</span>
+                                </div>
+                                <div class="dist-bar-track">
+                                    <div class="dist-bar-fill logistics" style="width: 14.6%;"></div>
+                                </div>
+                                <span class="dist-desc">Refrigerated fuel, toll corridors, crate handling.</span>
+                            </div>
+                            <div class="dist-item">
+                                <div class="dist-header">
+                                    <span>Shopkeeper / Middleman Margin</span>
+                                    <span class="dist-pct">15.4%</span>
+                                </div>
+                                <div class="dist-bar-track">
+                                    <div class="dist-bar-fill middleman" style="width: 15.4%;"></div>
+                                </div>
+                                <span class="dist-desc">Wholesale warehousing, sorting, shrinkage insurance.</span>
+                            </div>
+                            <div class="dist-item">
+                                <div class="dist-header">
+                                    <span>Local Retail Store Distribution</span>
+                                    <span class="dist-pct">9.2%</span>
+                                </div>
+                                <div class="dist-bar-track">
+                                    <div class="dist-bar-fill retail" style="width: 9.2%;"></div>
+                                </div>
+                                <span class="dist-desc">Last-mile consumer packaging and shop maintenance.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dash-card">
+                        <div class="dash-card-header">
+                            <div class="title-wrap">
+                                <h3><i class="ph-bold ph-chart-bar"></i> Price Index Benchmark (APMC vs Forage)</h3>
+                                <p>Price Index metrics mapped against standard mandi indices</p>
+                            </div>
+                        </div>
+                        <div class="benchmark-list">
+                            <div class="benchmark-row">
+                                <span class="crop-b-name">Nashik Tomatoes</span>
+                                <div class="benchmark-values">
+                                    <span class="b-farm">Farmer: ₹27.45/kg</span>
+                                    <span class="b-arrow">&rarr;</span>
+                                    <span class="b-ws">Wholesale: ₹32.01/kg</span>
+                                    <span class="b-arrow">&rarr;</span>
+                                    <span class="b-ret">Retail: ₹45.19/kg</span>
+                                </div>
+                                <span class="b-spread">+₹4.56/kg spread</span>
+                            </div>
+                            <div class="benchmark-row">
+                                <span class="crop-b-name">Pune Potatoes</span>
+                                <div class="benchmark-values">
+                                    <span class="b-farm">Farmer: ₹24.55/kg</span>
+                                    <span class="b-arrow">&rarr;</span>
+                                    <span class="b-ws">Wholesale: ₹28.30/kg</span>
+                                    <span class="b-arrow">&rarr;</span>
+                                    <span class="b-ret">Retail: ₹37.12/kg</span>
+                                </div>
+                                <span class="b-spread">+₹3.75/kg spread</span>
+                            </div>
+                            <div class="benchmark-row">
+                                <span class="crop-b-name">Nashik Onions</span>
+                                <div class="benchmark-values">
+                                    <span class="b-farm">Farmer: ₹31.01/kg</span>
+                                    <span class="b-arrow">&rarr;</span>
+                                    <span class="b-ws">Wholesale: ₹35.67/kg</span>
+                                    <span class="b-arrow">&rarr;</span>
+                                    <span class="b-ret">Retail: ₹44.36/kg</span>
+                                </div>
+                                <span class="b-spread">+₹4.66/kg spread</span>
+                            </div>
+                            <div class="benchmark-row">
+                                <span class="crop-b-name">Ahmedabad Carrots</span>
+                                <div class="benchmark-values">
+                                    <span class="b-farm">Farmer: ₹41.94/kg</span>
+                                    <span class="b-arrow">&rarr;</span>
+                                    <span class="b-ws">Wholesale: ₹52.95/kg</span>
+                                    <span class="b-arrow">&rarr;</span>
+                                    <span class="b-ret">Retail: ₹67.85/kg</span>
+                                </div>
+                                <span class="b-spread">+₹11.01/kg spread</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 6: AI DEMAND FORECASTING -->
+            <section id="tab-ai-forecasting" class="spa-tab">
+                <div class="ai-chat-layout">
+                    <!-- Left: Suggested Inquiries & Intelligence Signals -->
+                    <div class="ai-prompts-sidebar">
+                        <div class="dash-card">
+                            <div class="dash-card-header">
+                                <h3><i class="ph-bold ph-lightbulb"></i> Strategic Market Prompts</h3>
+                            </div>
+                            <p class="small-text">Click any insight below to ask the Forage AI Trade Analyst:</p>
+                            <div class="suggested-prompts">
+                                <button type="button" class="prompt-chip" data-prompt="What crops will see the biggest price increase next week?">
+                                    <i class="ph ph-trend-up"></i> Which crops are projected to surge next week?
+                                </button>
+                                <button type="button" class="prompt-chip" data-prompt="Should I bulk buy onions now or wait?">
+                                    <i class="ph ph-shopping-cart"></i> Should I bulk buy onions now or wait?
+                                </button>
+                                <button type="button" class="prompt-chip" data-prompt="How will current weather affect transit routes from Nashik?">
+                                    <i class="ph ph-cloud-rain"></i> Weather impact on Nashik transit routes?
+                                </button>
+                                <button type="button" class="prompt-chip" data-prompt="Which vegetable offers the highest profit margin right now?">
+                                    <i class="ph ph-currency-inr"></i> Highest profit margin crops right now?
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="dash-card mt-3">
+                            <div class="dash-card-header">
+                                <h3><i class="ph-bold ph-chart-polar"></i> Market Health Radar</h3>
+                            </div>
+                            <div class="mini-stats-list">
+                                <div class="mini-stat-row">
+                                    <span>Tomato Market Sentiment:</span>
+                                    <span class="badge-success">BULLISH (+8.4%)</span>
+                                </div>
+                                <div class="mini-stat-row">
+                                    <span>Onion Inventory Supply:</span>
+                                    <span class="badge-warning">TIGHT (-15%)</span>
+                                </div>
+                                <div class="mini-stat-row">
+                                    <span>Potato Harvest Arrivals:</span>
+                                    <span class="badge-neutral">STABLE</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Chat Window -->
+                    <div class="dash-card ai-chat-card">
+                        <div class="chat-header">
+                            <div class="ai-brand-info">
+                                <div class="ai-avatar"><i class="ph-fill ph-sparkle"></i></div>
+                                <div>
+                                    <h4 class="ai-title">Forage Demand AI Analyst</h4>
+                                    <span class="ai-status"><span class="dot-online"></span> Trained on 2026 APMC & Weather Corridors</span>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-text-sm" id="clearChatBtn"><i class="ph ph-trash"></i> Clear</button>
+                        </div>
+
+                        <!-- Chat Messages Stream -->
+                        <div class="chat-messages-container" id="chatContainer">
+                            <!-- Initial Greeting -->
+                            <div class="chat-bubble ai">
+                                <div class="bubble-avatar"><i class="ph-fill ph-sparkle"></i></div>
+                                <div class="bubble-content">
+                                    <p>Hello! I am your <strong>Forage Demand Forecasting Assistant</strong>. I analyze mandi price volatility, seasonal weather disruptions, and cold-chain transit rates to recommend the most profitable bulk buys.</p>
+                                    <div class="bubble-callout">
+                                        <strong>Today's Top Signal:</strong> Onion prices in Maharashtra mandis are expected to rise <strong>10–14% over the next 7 days</strong> due to heavy rain in the Nashik belt. We recommend locking in bulk procurement from Nashik growers today.
+                                    </div>
+                                    <span class="bubble-time">Just now</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input Box -->
+                        <form class="chat-input-bar" id="chatForm">
+                            <input type="text" id="chatInput" placeholder="Ask AI: e.g. 'Should I buy tomatoes today?', 'Best procurement route?'..." autocomplete="off">
+                            <button type="submit" class="chat-send-btn" aria-label="Send message">
+                                <i class="ph-bold ph-paper-plane-right"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- BULK ORDER CONFIRMATION MODAL -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-container">
+            <button type="button" class="close-modal" id="closeOrderModal"><i class="ph ph-x"></i></button>
+            <div class="modal-header">
+                <div class="modal-icon-badge"><i class="ph-bold ph-shopping-bag"></i></div>
+                <h3 id="modalCropTitle">Procure Bulk Produce</h3>
+                <p id="modalFarmerSub">Direct Contract with Farmer</p>
+            </div>
+            <form id="bulkOrderForm">
+                <input type="hidden" id="orderCropId">
+                <div class="order-summary-box">
+                    <div class="summary-row">
+                        <span>Farm-Gate Price:</span>
+                        <strong id="modalPrice">₹32 / kg</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Harvest Batch Available:</span>
+                        <span id="modalAvailQty">850 kg</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Origin Farm:</span>
+                        <span id="modalLocation">Nashik, Maharashtra</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Enter Order Quantity (kg)</label>
+                    <input type="number" id="orderQuantityInput" min="50" max="5000" value="250" required>
+                    <span class="input-hint">Minimum order: 50 kg</span>
+                </div>
+
+                <div class="input-group">
+                    <label>Select Cold-Chain Transit Route</label>
+                    <select id="orderRouteSelect">
+                        <option value="Reefer Express (Controlled 16°C)">Reefer Express (Controlled 16°C - ETA 6h)</option>
+                        <option value="Standard Ventilated Freight">Standard Ventilated Freight (ETA 9h)</option>
+                        <option value="Direct Farm Pickup">Direct Farm Pickup (Own Fleet)</option>
+                    </select>
+                </div>
+
+                <div class="total-calculation-box">
+                    <div class="summary-row">
+                        <span>Produce Subtotal:</span>
+                        <span id="calcSubtotal">₹8,000</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Cold-Chain Transit Telemetry:</span>
+                        <span id="calcLogistics">₹650</span>
+                    </div>
+                    <div class="summary-row total-row">
+                        <span>Total Payable Value:</span>
+                        <strong id="calcTotal">₹8,650</strong>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary full-width" id="confirmOrderBtn">
+                    Confirm & Place Bulk Order &rarr;
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">Order placed successfully!</div>
+
+    <script src="gl.js"></script>
+    <script src="shopkeeper.js"></script>
+</body>
+</html>
