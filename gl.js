@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("gl-canvas");
+    if (!canvas) return;
     const gl = canvas.getContext("webgl");
 
     if (!gl) {
@@ -69,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
             float n = snoise(st * 2.0 + t);
             n += 0.5 * snoise(st * 4.0 - t * 0.5);
             
-            // Colors: Soft Sage/Mint base (background) transitioning to subtle Deep Forest Green
+            // Colors: Soft Sage/Mint base transitioning to subtle Deep Forest Green
             vec3 color1 = vec3(0.957, 0.969, 0.961); // #F4F7F5 (Bg-main)
             vec3 color2 = vec3(0.85, 0.90, 0.87);    // Slightly darker mint
             vec3 color3 = vec3(0.094, 0.227, 0.169); // #183A2B (Primary Green)
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Map the noise to a smooth gradient map
             float mixVal = smoothstep(-1.0, 1.0, n);
             
-            // We keep the dark green very subtle by multiplying the opacity of that band
+            // We keep the dark green very subtle
             vec3 finalColor = mix(color1, color2, mixVal);
             // Add a very faint highlight of the dark primary color
             float highlight = smoothstep(0.6, 1.0, n);
