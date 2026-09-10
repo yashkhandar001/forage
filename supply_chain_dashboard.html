@@ -14,7 +14,7 @@
       --bg-card: rgba(22, 33, 58, 0.7);
       --bg-card-hover: rgba(30, 45, 78, 0.85);
       --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-glow: rgba(16, 185, 129, 0.3);
+      --border-glow: rgba(255, 255, 255, 0.12);
       --accent-emerald: #10b981;
       --accent-emerald-glow: rgba(16, 185, 129, 0.15);
       --accent-cyan: #06b6d4;
@@ -35,7 +35,7 @@
     }
 
     body {
-      background: radial-gradient(circle at 10% 20%, #0d1629 0%, #080d16 100%);
+      background: #090d16;
       color: var(--text-main);
       font-family: var(--font-sans);
       min-height: 100vh;
@@ -43,26 +43,8 @@
       padding: 24px;
     }
 
-    .ambient-glow {
-      position: fixed;
-      top: -100px;
-      right: -100px;
-      width: 450px;
-      height: 450px;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.12), transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-    .ambient-glow-2 {
-      position: fixed;
-      bottom: -150px;
-      left: -100px;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(6, 182, 212, 0.08), transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
+    
+    
 
     .container {
       max-width: 1400px;
@@ -96,7 +78,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
     .mongo-badge-icon svg {
@@ -546,39 +528,23 @@
 </head>
 <body>
 
-<!-- UNIFIED GLOBAL SWITCHER BAR -->
-<div id="forage-unified-bar" style="background: #090e17; border-bottom: 1px solid rgba(255,255,255,0.09); padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 0.8rem; z-index: 9999; position: relative;">
-  <div style="display: flex; align-items: center; gap: 12px;">
-    <a href="app.html" style="font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 6px; font-size: 0.95rem;">
-      <span style="color: #10b981;">●</span> Forage Unified
-    </a>
-    <span style="color: #64748b;">|</span>
-    <span style="color: #94a3b8; font-size: 0.75rem;">Fullstack Supply Chain Hub</span>
+<!-- CLASSIC TOP NAV BAR -->
+<div style="background: #0d1526; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.825rem;">
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <a href="index.html" style="color: #ffffff; font-weight: 800; text-decoration: none; font-size: 0.95rem;">Forage<span style="color: #10b981;">.</span></a>
+    <span style="color: #475569;">/</span>
+    <span style="color: #94a3b8; font-family: var(--font-mono); font-size: 0.75rem;">supply_chain_db</span>
   </div>
-  <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-    <a href="app.html" style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 5px;">
-      🎛️ Master Cockpit
-    </a>
-    <a href="farmer.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
-      🌾 Farmer
-    </a>
-    <a href="shopkeeper.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
-      🏪 Shopkeeper
-    </a>
-    <a href="customer.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
-      🥗 Pantry
-    </a>
-    <a href="supply_chain_dashboard.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
-      📊 MongoDB DB
-    </a>
-    <a href="index.html" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-weight: 600;">
-      🏠 Home
-    </a>
+  <div style="display: flex; align-items: center; gap: 8px;">
+    <a href="index.html" style="color: #94a3b8; text-decoration: none; padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);">Overview</a>
+    <a href="farmer.html" style="color: #94a3b8; text-decoration: none; padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);">Farmer</a>
+    <a href="shopkeeper.html" style="color: #94a3b8; text-decoration: none; padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);">Shopkeeper</a>
+    <a href="customer.html" style="color: #94a3b8; text-decoration: none; padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);">Kitchen</a>
+    <a href="app.html" style="color: #34d399; text-decoration: none; padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.3); background: rgba(16,185,129,0.1); font-weight: 600;">Cockpit</a>
   </div>
 </div>
 
-  <div class="ambient-glow"></div>
-  <div class="ambient-glow-2"></div>
+  
 
   <div class="container">
     <header>
