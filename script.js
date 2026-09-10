@@ -1,14 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // 1. Loading Screen 
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            const loader = document.getElementById('loading-screen');
+    // 1. Loading Screen (Instant & Robust)
+    function dismissLoader() {
+        const loader = document.getElementById('loading-screen');
+        if (loader && loader.style.visibility !== 'hidden') {
             loader.style.opacity = '0';
             loader.style.visibility = 'hidden';
-            revealElements.forEach(el => revealOnScroll.observe(el));
-        }, 2000); 
-    });
+            if (typeof revealElements !== 'undefined' && typeof revealOnScroll !== 'undefined') {
+                revealElements.forEach(el => revealOnScroll.observe(el));
+            }
+        }
+    }
+    setTimeout(dismissLoader, 600);
+    window.addEventListener('load', dismissLoader);
 
     // 2. Sticky Navbar Effect
     const navbar = document.getElementById('navbar');
